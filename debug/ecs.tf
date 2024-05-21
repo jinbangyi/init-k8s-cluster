@@ -22,7 +22,7 @@ resource "huaweicloud_compute_instance" "http_gateway" {
   image_id           = data.huaweicloud_images_image.default.id
   flavor_id          = data.huaweicloud_compute_flavors.http_gateway.ids[0]
   availability_zone  = data.huaweicloud_availability_zones.default.names[0]
-  security_group_ids = [data.huaweicloud_networking_secgroup.mysecgroup.id]
+  security_group_ids = [huaweicloud_networking_secgroup.production-default.id,huaweicloud_networking_secgroup.production-private-default.id]
 
   network {
     uuid = huaweicloud_vpc_subnet.production-private.id
