@@ -97,17 +97,17 @@ resource "huaweicloud_nat_gateway" "default" {
 resource "huaweicloud_nat_snat_rule" "rule1" {
   floating_ip_id = huaweicloud_vpc_eip.nat.id
   nat_gateway_id = huaweicloud_nat_gateway.default.id
-  network_id     = huaweicloud_vpc_subnet.production-private.id
+  subnet_id     = huaweicloud_vpc_subnet.production-private.id
 }
 
 resource "huaweicloud_nat_snat_rule" "rule2" {
   floating_ip_id = huaweicloud_vpc_eip.nat.id
   nat_gateway_id = huaweicloud_nat_gateway.default.id
-  network_id     = huaweicloud_vpc_subnet.production-private_devops.id
+  subnet_id     = huaweicloud_vpc_subnet.production-private_devops.id
 }
 
 resource "huaweicloud_nat_snat_rule" "rule3" {
   floating_ip_id = huaweicloud_vpc_eip.nat.id
   nat_gateway_id = huaweicloud_nat_gateway.default.id
-  network_id     = huaweicloud_vpc_subnet.production-private_db.id
+  subnet_id     = huaweicloud_vpc_subnet.production-private_db.id
 }
