@@ -32,7 +32,7 @@ resource "huaweicloud_compute_instance" "http_gateway" {
 }
 
 resource "huaweicloud_compute_instance" "jumpserver" {
-  name               = "prod-jumpserver-00${count.index}"
+  name               = "prod-jumpserver-000"
   key_pair           = "manager"
   system_disk_size   = 40
   image_id           = data.huaweicloud_images_image.default.id
@@ -43,8 +43,6 @@ resource "huaweicloud_compute_instance" "jumpserver" {
   network {
     uuid = huaweicloud_vpc_subnet.production-public.id
   }
-
-  count = 1
 }
 
 resource "huaweicloud_compute_eip_associate" "associated" {
