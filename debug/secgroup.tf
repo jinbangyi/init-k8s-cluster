@@ -35,9 +35,9 @@ resource "huaweicloud_networking_secgroup" "prod_private_db-default" {
 }
 
 # 创建 api 网关的安全组
-resource "huaweicloud_networking_secgroup" "prod_public-http_gateway" {
-  name                 = "prod_public-http_gateway"
-  description          = "prod_public-http_gateway"
+resource "huaweicloud_networking_secgroup" "prod_private-http_gateway" {
+  name                 = "prod_private-http_gateway"
+  description          = "prod_private-http_gateway"
   delete_default_rules = false
 }
 
@@ -49,7 +49,7 @@ resource "huaweicloud_networking_secgroup_rule" "secgroup_rule1" {
   port_range_min    = 443
   port_range_max    = 443
   remote_ip_prefix  = "0.0.0.0/0"
-  security_group_id = huaweicloud_networking_secgroup.prod_public-http_gateway.id
+  security_group_id = huaweicloud_networking_secgroup.prod_private-http_gateway.id
 }
 
 # 创建 api 网关的安全规则
@@ -60,7 +60,7 @@ resource "huaweicloud_networking_secgroup_rule" "secgroup_rule2" {
   port_range_min    = 80
   port_range_max    = 80
   remote_ip_prefix  = "0.0.0.0/0"
-  security_group_id = huaweicloud_networking_secgroup.prod_public-http_gateway.id
+  security_group_id = huaweicloud_networking_secgroup.prod_private-http_gateway.id
 }
 
 # 创建 jumpserver 安全组
