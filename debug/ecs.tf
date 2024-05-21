@@ -15,15 +15,10 @@ data "huaweicloud_images_image" "default" {
   most_recent = true
 }
 
-resource "random_password" "password" {
-  length           = 16
-  special          = true
-  override_special = "!@#$%*"
-}
-
 resource "huaweicloud_compute_instance" "http_gateway" {
   name               = "prod-gateway-00${count.index}"
-  admin_pass         = random_password.password.result
+  key_pair           = "manager"
+  system_disk_size   = 40
   image_id           = data.huaweicloud_images_image.default.id
   flavor_id          = data.huaweicloud_compute_flavors.http_gateway.ids[0]
   availability_zone  = data.huaweicloud_availability_zones.default.names[0]
