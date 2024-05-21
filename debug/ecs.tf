@@ -2,7 +2,7 @@
 data "huaweicloud_availability_zones" "default" {}
 
 # gateway
-data "huaweicloud_compute_flavors" "http_gateway" {
+data "huaweicloud_compute_flavors" "prod_http_gateway" {
   availability_zone = data.huaweicloud_availability_zones.default.names[0]
   performance_type  = "normal"
   cpu_core_count    = 2
@@ -10,17 +10,17 @@ data "huaweicloud_compute_flavors" "http_gateway" {
 }
 
 data "huaweicloud_images_image" "default" {
-  name        = "2C4G40G"
+  name        = "2C4G40G_1"
   visibility  = "private"
   most_recent = true
 }
 
-resource "huaweicloud_compute_instance" "http_gateway" {
+resource "huaweicloud_compute_instance" "prod_http_gateway" {
   name               = "prod-gateway-00${count.index}"
   key_pair           = "manager"
   system_disk_size   = 40
   image_id           = data.huaweicloud_images_image.default.id
-  flavor_id          = data.huaweicloud_compute_flavors.http_gateway.ids[0]
+  flavor_id          = data.huaweicloud_compute_flavors.prod_http_gateway.ids[0]
   availability_zone  = data.huaweicloud_availability_zones.default.names[0]
   security_group_ids = [
     huaweicloud_networking_secgroup.production-default.id,
@@ -29,7 +29,7 @@ resource "huaweicloud_compute_instance" "http_gateway" {
   ]
 
   network {
-    uuid = huaweicloud_vpc_subnet.production-private.id
+    uuid = huaweicloud_vpc_subnet.prod_private.id
   }
 
   count = 2
@@ -37,10 +37,11 @@ resource "huaweicloud_compute_instance" "http_gateway" {
 
 resource "huaweicloud_compute_instance" "jumpserver" {
   name               = "prod-jumpserver-000"
+  hostname           = "prod-jumpserver-000"
   key_pair           = "manager"
   system_disk_size   = 40
   image_id           = data.huaweicloud_images_image.default.id
-  flavor_id          = data.huaweicloud_compute_flavors.http_gateway.ids[0]
+  flavor_id          = data.huaweicloud_compute_flavors.prod_http_gateway.ids[0]
   availability_zone  = data.huaweicloud_availability_zones.default.names[0]
   security_group_ids = [
     huaweicloud_networking_secgroup.production-default.id,
@@ -49,11 +50,11 @@ resource "huaweicloud_compute_instance" "jumpserver" {
   ]
 
   network {
-    uuid = huaweicloud_vpc_subnet.production-public.id
+    uuid = huaweicloud_vpc_subnet.prod_public.id
   }
 }
 
 resource "huaweicloud_compute_eip_associate" "associated" {
-  public_ip   = huaweicloud_vpc_eip.jumpserver.address
+  public_ip   = huaweicloud_vpc_eip.prod_jumpserver.address
   instance_id = huaweicloud_compute_instance.jumpserver.id
 }
