@@ -12,6 +12,7 @@ resource "huaweicloud_vpc_eip_associate" "http_gateway" {
 
 # 创建 listener
 resource "huaweicloud_lb_listener" "http_gateway" {
+  name = "http_gateway"
   protocol        = "HTTP"
   protocol_port   = 443
   loadbalancer_id = huaweicloud_lb_loadbalancer.http_gateway.id
@@ -19,9 +20,10 @@ resource "huaweicloud_lb_listener" "http_gateway" {
 
 # 创建 lb 对应的池子
 resource "huaweicloud_lb_pool" "http_gateway" {
- protocol = "HTTP"
- lb_method = "ROUND_ROBIN"
- listener_id = huaweicloud_lb_listener.http_gateway.id 
+  name          = "http_gateway"
+  protocol      = "HTTP"
+  lb_method     = "ROUND_ROBIN"
+  listener_id   = huaweicloud_lb_listener.http_gateway.id 
 }
 
 # 添加 ecs 至 lb
