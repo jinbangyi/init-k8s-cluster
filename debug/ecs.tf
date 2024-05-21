@@ -22,7 +22,11 @@ resource "huaweicloud_compute_instance" "http_gateway" {
   image_id           = data.huaweicloud_images_image.default.id
   flavor_id          = data.huaweicloud_compute_flavors.http_gateway.ids[0]
   availability_zone  = data.huaweicloud_availability_zones.default.names[0]
-  security_group_ids = [huaweicloud_networking_secgroup.production-default.id,huaweicloud_networking_secgroup.production-private-default.id]
+  security_group_ids = [
+    huaweicloud_networking_secgroup.production-default.id,
+    huaweicloud_networking_secgroup.production-private-default.id,
+    huaweicloud_networking_secgroup.production-public-http_gateway.id,
+  ]
 
   network {
     uuid = huaweicloud_vpc_subnet.production-private.id
@@ -38,7 +42,11 @@ resource "huaweicloud_compute_instance" "jumpserver" {
   image_id           = data.huaweicloud_images_image.default.id
   flavor_id          = data.huaweicloud_compute_flavors.http_gateway.ids[0]
   availability_zone  = data.huaweicloud_availability_zones.default.names[0]
-  security_group_ids = [huaweicloud_networking_secgroup.production-default.id,huaweicloud_networking_secgroup.production-public-default.id]
+  security_group_ids = [
+    huaweicloud_networking_secgroup.production-default.id,
+    huaweicloud_networking_secgroup.production-public-default.id,
+    huaweicloud_networking_secgroup.production-public-jumpserver.id
+  ]
 
   network {
     uuid = huaweicloud_vpc_subnet.production-public.id

@@ -71,7 +71,7 @@ resource "huaweicloud_networking_secgroup" "production-public-jumpserver" {
 }
 
 # 创建 jumpserver 安全组规则
-resource "huaweicloud_networking_secgroup_rule" "secgroup_rule" {
+resource "huaweicloud_networking_secgroup_rule" "secgroup_rule3" {
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
