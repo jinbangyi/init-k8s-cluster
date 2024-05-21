@@ -4,7 +4,51 @@ resource "huaweicloud_vpc" "vpc" {
   cidr = "10.6.0.0/16"
 }
 
-# 2. 创建子网
+# 创建 eip
+# 创建默认 nat 出网 eip
+resource "huaweicloud_vpc_eip" "nat" {
+  publicip {
+    type = "5_bgp"
+  }
+  bandwidth {
+    name        = "nat"
+    # 1-300
+    size        = 200
+    share_type  = "PER"
+    charge_mode = "traffic"
+  }
+}
+
+# 创建 gateway lb eip
+resource "huaweicloud_vpc_eip" "gateway_lb" {
+  publicip {
+    type = "5_bgp"
+  }
+  bandwidth {
+    name        = "gateway_lb"
+    # 1-300
+    size        = 200
+    share_type  = "PER"
+    charge_mode = "traffic"
+  }
+}
+
+# 创建 jumpserver eip
+resource "huaweicloud_vpc_eip" "jumpserver" {
+  publicip {
+    type = "5_bgp"
+  }
+  bandwidth {
+    name        = "jumpserver"
+    # 1-300
+    size        = 50
+    share_type  = "PER"
+    charge_mode = "traffic"
+  }
+}
+
+# 创建子网
+# 创建走 nat 的子网
 resource "huaweicloud_vpc_subnet" "production-private" {
   name       = "production-private"
   cidr       = "10.6.8.0/22"
@@ -13,6 +57,7 @@ resource "huaweicloud_vpc_subnet" "production-private" {
   dns_list   = ["100.125.1.250", "100.125.128.250"]
 }
 
+# 创建有独立公网 IP 的子网
 resource "huaweicloud_vpc_subnet" "production-public" {
   name       = "production-public"
   cidr       = "10.6.12.0/22"
@@ -21,6 +66,7 @@ resource "huaweicloud_vpc_subnet" "production-public" {
   dns_list   = ["100.125.1.250", "100.125.128.250"]
 }
 
+# 创建走 nat 并且非业务、非数据库，可用性要求较低的服务
 resource "huaweicloud_vpc_subnet" "production-private_devops" {
   name       = "production-private_devops"
   cidr       = "10.6.16.0/22"
@@ -29,6 +75,7 @@ resource "huaweicloud_vpc_subnet" "production-private_devops" {
   dns_list   = ["100.125.1.250", "100.125.128.250"]
 }
 
+# 创建走 nat 并且是数据库等可用性要求较高的服务
 resource "huaweicloud_vpc_subnet" "production-private_db" {
   name       = "production-private_db"
   cidr       = "10.6.20.0/22"
@@ -37,75 +84,30 @@ resource "huaweicloud_vpc_subnet" "production-private_db" {
   dns_list   = ["100.125.1.250", "100.125.128.250"]
 }
 
-# 创建安全组
-resource "huaweicloud_networking_secgroup" "production-default" {
-  name                 = "production-default"
-  description          = "production-default"
-  delete_default_rules = false
+# 创建 nat 并关联子网
+resource "huaweicloud_nat_gateway" "default" {
+  name        = "default"
+  description = "default"
+  spec        = "2"
+  vpc_id      = huaweicloud_vpc.vpc.id
+  subnet_id   = huaweicloud_vpc_subnet.production-private.id
 }
 
-resource "huaweicloud_networking_secgroup" "production-private-default" {
-  name                 = "production-private-default"
-  description          = "production-private-default"
-  delete_default_rules = false
+# 绑定 nat、eip、子网
+resource "huaweicloud_nat_snat_rule" "rule1" {
+  floating_ip_id = huaweicloud_vpc_eip.nat.id
+  nat_gateway_id = huaweicloud_nat_gateway.default.id
+  network_id     = huaweicloud_vpc_subnet.production-private.id
 }
 
-resource "huaweicloud_networking_secgroup" "production-public-default" {
-  name                 = "production-public-default"
-  description          = "production-public-default"
-  delete_default_rules = false
+resource "huaweicloud_nat_snat_rule" "rule2" {
+  floating_ip_id = huaweicloud_vpc_eip.nat.id
+  nat_gateway_id = huaweicloud_nat_gateway.default.id
+  network_id     = huaweicloud_vpc_subnet.production-private_devops.id
 }
 
-resource "huaweicloud_networking_secgroup" "production-private_devops-default" {
-  name                 = "production-private_devops-default"
-  description          = "production-private_devops-default"
-  delete_default_rules = false
-}
-
-resource "huaweicloud_networking_secgroup" "production-private_db-default" {
-  name                 = "production-private_db-default"
-  description          = "production-private_db-default"
-  delete_default_rules = false
-}
-
-resource "huaweicloud_networking_secgroup" "production-public-http_gateway" {
-  name                 = "production-public-http_gateway"
-  description          = "production-public-http_gateway"
-  delete_default_rules = false
-}
-
-resource "huaweicloud_networking_secgroup_rule" "secgroup_rule1" {
-  direction         = "ingress"
-  ethertype         = "IPv4"
-  protocol          = "tcp"
-  port_range_min    = 443
-  port_range_max    = 443
-  remote_ip_prefix  = "0.0.0.0/0"
-  security_group_id = huaweicloud_networking_secgroup.production-public-http_gateway.id
-}
-
-resource "huaweicloud_networking_secgroup_rule" "secgroup_rule2" {
-  direction         = "ingress"
-  ethertype         = "IPv4"
-  protocol          = "tcp"
-  port_range_min    = 80
-  port_range_max    = 80
-  remote_ip_prefix  = "0.0.0.0/0"
-  security_group_id = huaweicloud_networking_secgroup.production-public-http_gateway.id
-}
-
-resource "huaweicloud_networking_secgroup" "production-public-jumpserver" {
-  name                 = "production-public-jumpserver"
-  description          = "production-public-jumpserver"
-  delete_default_rules = false
-}
-
-resource "huaweicloud_networking_secgroup_rule" "secgroup_rule" {
-  direction         = "ingress"
-  ethertype         = "IPv4"
-  protocol          = "tcp"
-  port_range_min    = 2222
-  port_range_max    = 2222
-  remote_ip_prefix  = "0.0.0.0/0"
-  security_group_id = huaweicloud_networking_secgroup.production-public-jumpserver.id
+resource "huaweicloud_nat_snat_rule" "rule3" {
+  floating_ip_id = huaweicloud_vpc_eip.nat.id
+  nat_gateway_id = huaweicloud_nat_gateway.default.id
+  network_id     = huaweicloud_vpc_subnet.production-private_db.id
 }
