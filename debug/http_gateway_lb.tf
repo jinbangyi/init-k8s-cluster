@@ -19,7 +19,7 @@ resource "huaweicloud_lb_listener" "http_gateway" {
 
 # 创建 lb 对应的池子
 resource "huaweicloud_lb_pool" "http_gateway" {
- protocol = "HTTP"
+ protocol = "TCP"
  lb_method = "ROUND_ROBIN"
  listener_id = huaweicloud_lb_listener.http_gateway.id 
 }
