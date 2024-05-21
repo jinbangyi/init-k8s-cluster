@@ -12,7 +12,7 @@ resource "huaweicloud_vpc_eip_associate" "http_gateway" {
 
 # 创建 listener
 resource "huaweicloud_lb_listener" "http_gateway" {
-  protocol        = "HTTP"
+  protocol        = "TCP"
   protocol_port   = 443
   loadbalancer_id = huaweicloud_lb_loadbalancer.http_gateway.id
 }
@@ -40,6 +40,9 @@ resource "huaweicloud_lb_member" "member_2" {
   pool_id       = huaweicloud_lb_pool.http_gateway.id
   subnet_id     = huaweicloud_vpc_subnet.production-private.ipv4_subnet_id
 }
+
+# TODO 配置访问日志
+# TOOD 配置 https
 
 # --------------------- end ---------------
 
