@@ -18,3 +18,7 @@ terraform {
   #   skip_credentials_validation = true
   # }
 }
+
+provider "huaweicloud" {
+  region = "ap-southeast-3"
+}
