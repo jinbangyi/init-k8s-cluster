@@ -33,13 +33,22 @@ resource "huaweicloud_networking_secgroup" "prod_public-jumpserver2" {
   delete_default_rules = false
 }
 
-# 创建 jumpserver2 安全组规则
-resource "huaweicloud_networking_secgroup_rule" "secgroup_rule3" {
+resource "huaweicloud_networking_secgroup_rule" "jumpserver2_secgroup_rule1" {
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
   port_range_min    = 2222
   port_range_max    = 2222
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = huaweicloud_networking_secgroup.prod_public-jumpserver2.id
+}
+
+resource "huaweicloud_networking_secgroup_rule" "jumpserver2_secgroup_rule2" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 22
+  port_range_max    = 22
   remote_ip_prefix  = "0.0.0.0/0"
   security_group_id = huaweicloud_networking_secgroup.prod_public-jumpserver2.id
 }
