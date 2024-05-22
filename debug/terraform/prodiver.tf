@@ -22,3 +22,31 @@ terraform {
 provider "huaweicloud" {
   region = "ap-southeast-3"
 }
+
+# variable "nodes" {
+#   type = set(object({
+#     name = string
+#     tag  = string
+#   }))
+#   default = [
+#     {
+#       name = "master1"
+#       tag  = "master"
+#     },
+#     {
+#       name = "master2",
+#       tag  = "master"
+#     },
+#     {
+#       name = "agent1",
+#       tag  = "agent"
+#       }, {
+#       name = "agent2",
+#       tag  = "agent"
+#     },
+#     {
+#       name = "agent3",
+#       tag  = "agent"
+#     }
+#   ]
+# }

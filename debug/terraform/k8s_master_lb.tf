@@ -1,4 +1,4 @@
-# --------------------- 创建 http gateway lb ---------------
+# --------------------- 创建 k8s master lb ---------------
 resource "huaweicloud_lb_loadbalancer" "prod_master" {
   name          = "prod_master"
   vip_subnet_id = huaweicloud_vpc_subnet.prod_private_devops.ipv4_subnet_id
@@ -21,28 +21,14 @@ resource "huaweicloud_lb_pool" "prod_master" {
 }
 
 # 添加 ecs 至 lb
-resource "huaweicloud_lb_member" "member_1" {
-  address       = huaweicloud_compute_instance.prod_master[0].access_ip_v4
+resource "huaweicloud_lb_member" "k8s_master_member_1" {
+  address       = huaweicloud_compute_instance.prod_master[count.index].access_ip_v4
   protocol_port = 443
   weight        = 1
   pool_id       = huaweicloud_lb_pool.prod_master.id
   subnet_id     = huaweicloud_vpc_subnet.prod_private_devops.ipv4_subnet_id
-}
 
-resource "huaweicloud_lb_member" "member_2" {
-  address       = huaweicloud_compute_instance.prod_master[1].access_ip_v4
-  protocol_port = 443
-  weight        = 1
-  pool_id       = huaweicloud_lb_pool.prod_master.id
-  subnet_id     = huaweicloud_vpc_subnet.prod_private_devops.ipv4_subnet_id
-}
-
-resource "huaweicloud_lb_member" "member_3" {
-  address       = huaweicloud_compute_instance.prod_master[2].access_ip_v4
-  protocol_port = 443
-  weight        = 1
-  pool_id       = huaweicloud_lb_pool.prod_master.id
-  subnet_id     = huaweicloud_vpc_subnet.prod_private_devops.ipv4_subnet_id
+  count = 3
 }
 
 # TODO 配置访问日志
