@@ -52,9 +52,9 @@ resource "huaweicloud_compute_instance" "prod_master" {
 #   value = join(",", [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
 # }
 
-locals {
+output master_value {
   # Ids for multiple sets of EC2 instances, merged together
-  master_value = join(",", [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
+  value = join(",", [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
 }
 
 # Use the IP list in local-exec
@@ -69,8 +69,10 @@ resource "null_resource" "run_ansible" {
       database_password=${var.postgreSQL_password} \
       database_name=kube_prod \
       database_port=5432 \
-      master_ip_string=${locals.master_value}"
+      master_ip_string=${master_value.value}"
     EOT
     working_dir = "${path.module}/../ansible"
   }
+
+  depends_on = [ huaweicloud_compute_instance.prod_master ]
 }
