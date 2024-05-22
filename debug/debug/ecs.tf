@@ -9,8 +9,8 @@ data "huaweicloud_compute_flavors" "prod_http_gateway" {
 }
 
 data "huaweicloud_images_image" "default" {
-  name        = "Debian 10.0.0 64bit"
-  visibility  = "public"
+  name        = "testing"
+  visibility  = "private"
   most_recent = true
 }
 
