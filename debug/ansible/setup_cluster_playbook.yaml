@@ -4,6 +4,7 @@
   become: True
   vars:
     default_k3s_tls_san: ["127.0.0.1", "{{ loadbalancer_ip }}"]
+    k3s_release_version: 'v1.18.19+k3s1'
     k3s_no_traefik: true
     k3s_no_coredns: true
     k3s_no_local_storage: true
