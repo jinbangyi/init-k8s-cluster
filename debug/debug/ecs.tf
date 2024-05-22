@@ -14,8 +14,8 @@ data "huaweicloud_images_image" "default" {
   most_recent = true
 }
 
-resource "huaweicloud_vpc" "prod_vpc" {
-  name = "prod_vpc"
+resource "huaweicloud_vpc" "prod_vpc2" {
+  name = "prod_vpc2"
   cidr = "10.10.0.0/16"
 }
 
@@ -23,7 +23,7 @@ resource "huaweicloud_vpc_subnet" "prod_public" {
   name       = "prod_public"
   cidr       = "10.10.12.0/22"
   gateway_ip = "10.10.12.1"
-  vpc_id     = huaweicloud_vpc.prod_vpc.id
+  vpc_id     = huaweicloud_vpc.prod_vpc2.id
   dns_list   = ["100.125.1.250", "100.125.128.250"]
 }
 
