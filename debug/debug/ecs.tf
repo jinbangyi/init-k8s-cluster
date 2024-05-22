@@ -80,3 +80,18 @@ resource "huaweicloud_compute_eip_associate" "associated" {
   public_ip   = huaweicloud_vpc_eip.prod_jumpserver2.address
   instance_id = huaweicloud_compute_instance.jumpserver2.id
 }
+
+terraform {
+  required_providers {
+    huaweicloud = {
+      source = "huaweicloud/huaweicloud"
+      version = ">= 1.20.0"
+    }
+
+  }
+  required_version = ">= 0.13"
+}
+
+provider "huaweicloud" {
+  region = "ap-southeast-3"
+}
