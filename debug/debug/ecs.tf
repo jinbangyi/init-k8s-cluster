@@ -58,7 +58,7 @@ resource "huaweicloud_compute_instance" "jumpserver2" {
   name               = "prod-jumpserver2-001"
   hostname           = "prod-jumpserver2-001"
   # account keypair
-  key_pair           = "manager"
+  key_pair           = "aws-manager"
   system_disk_size   = 40
   image_id           = data.huaweicloud_images_image.default.id
   flavor_id          = data.huaweicloud_compute_flavors.prod_http_gateway.ids[0]
