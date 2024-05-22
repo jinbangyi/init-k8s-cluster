@@ -59,6 +59,10 @@ output master_value {
 
 # Use the IP list in local-exec
 resource "null_resource" "run_ansible" {
+  triggers = {
+    ecs_ips = join(",", [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
+  }
+
   provisioner "local-exec" {
     command = <<EOT
       do-ansible-inventory --group-by-tag > hosts.ini
@@ -69,7 +73,7 @@ resource "null_resource" "run_ansible" {
       database_password=${var.postgreSQL_password} \
       database_name=kube_prod \
       database_port=5432 \
-      master_ip_string=${master_value.value}"
+      master_ip_string=${self.triggers.ecs_ips}"
     EOT
     working_dir = "${path.module}/../ansible"
   }
