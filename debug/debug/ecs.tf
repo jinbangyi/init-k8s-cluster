@@ -55,7 +55,6 @@ resource "huaweicloud_compute_instance" "jumpserver2" {
   flavor_id          = data.huaweicloud_compute_flavors.prod_http_gateway.ids[0]
   availability_zone  = data.huaweicloud_availability_zones.default.names[0]
   security_group_ids = [
-    huaweicloud_networking_secgroup.prod_public-default.id,
     huaweicloud_networking_secgroup.prod_public-jumpserver2.id
   ]
 
