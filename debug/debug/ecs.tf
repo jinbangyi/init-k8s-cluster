@@ -9,7 +9,7 @@ data "huaweicloud_compute_flavors" "prod_http_gateway" {
 }
 
 data "huaweicloud_images_image" "default" {
-  name        = "2C4G40G_1"
+  name        = "testing2"
   visibility  = "private"
   most_recent = true
 }
