@@ -26,11 +26,17 @@ resource "huaweicloud_compute_instance" "prod_master" {
    inline = ["sudo apt update", "sudo apt install python3 -y", "echo Done!"]
 
    connection {
-     host        = self.access_ip_v4
-     type        = "ssh"
-     user        = "root"
-     port        = 2222
-     private_key = file(pathexpand("~/.ssh/ansible_rsa"))
+      type                = "ssh"
+
+      host                = self.access_ip_v4
+      user                = "root"
+      port                = 2222
+      private_key         = file(pathexpand("~/.ssh/ansible_rsa"))
+
+      bastion_host        = huaweicloud_vpc_eip.prod_jumpserver.address
+      # bastion_user        = "root"
+      # bastion_port        = 2222
+      # bastion_private_key = file(pathexpand("~/.ssh/ansible_rsa"))
     }
   }
 
@@ -42,7 +48,7 @@ resource "huaweicloud_compute_instance" "prod_master" {
   # EOF
   # }
 
-  count = 3
+  count = 2
 
   depends_on = [ huaweicloud_rds_instance.k8s_pg ]
 }
