@@ -60,7 +60,7 @@ resource "huaweicloud_compute_instance" "prod_master" {
 
 output master_value {
   # Ids for multiple sets of EC2 instances, merged together
-  value = [for instance in huaweicloud_compute_instance.prod_master : instance]
+  value = [for instance in huaweicloud_compute_instance.prod_master : instance.network]
 }
 
 # Use the IP list in local-exec
