@@ -21,7 +21,7 @@ resource "huaweicloud_rds_instance" "k8s_pg" {
   }
 
   volume {
-    type = "LOCALSSD"
+    type = "CLOUDSSD"
     size = 40
   }
 
