@@ -80,7 +80,7 @@ resource "null_resource" "run_ansible" {
       database_password=${var.postgreSQL_password} \
       database_name=kube_prod \
       database_port=5432 \
-      master_ip_string=${self.triggers.ecs_ips}"
+      master_ip_string=${self.triggers.ecs_ips}" \
       --ssh-extra-args '-o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa"'
     EOT
     working_dir = "${path.module}/../ansible"
