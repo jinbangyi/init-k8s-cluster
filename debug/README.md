@@ -3,6 +3,10 @@
 ## steps
 
 ```bash
+# 0. init executor
+apt install python3-venv -y
+# python3 -m pip install pipx
+pipx install --include-deps ansible
 # 1. using terraform init k8s cluster
 
 # 2. using terraform init argocd
