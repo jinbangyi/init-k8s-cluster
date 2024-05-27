@@ -48,7 +48,7 @@ resource "huaweicloud_compute_instance" "prod_master" {
   # EOF
   # }
 
-  count = 2
+  count = 3
 
   depends_on = [ huaweicloud_rds_instance.k8s_pg ]
 }
