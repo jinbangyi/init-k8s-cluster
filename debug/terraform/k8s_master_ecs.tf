@@ -68,7 +68,7 @@ resource "null_resource" "run_ansible" {
   triggers = {
     # public_ip
     ecs_ips = join(",", [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
-    hosts = join(",", [for instance in huaweicloud_compute_instance.prod_master : format("%s %s",instance.flavor_name,instance.network.0.fixed_ip_v4)])
+    hosts = join(",", [for instance in huaweicloud_compute_instance.prod_master : format("prod-master-%s %s",instance.id,instance.network.0.fixed_ip_v4)])
   }
 
   provisioner "local-exec" {
