@@ -11,7 +11,7 @@ data "huaweicloud_compute_flavors" "prod_http_gateway" {
 
 data "huaweicloud_images_image" "default" {
   # 2C4G40G_1
-  name        = "Debian11-40G2"
+  name        = "Debian11-40G3"
   visibility  = "private"
   most_recent = true
 }
