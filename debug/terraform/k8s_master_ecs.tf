@@ -66,6 +66,7 @@ output master_value {
 # Use the IP list in local-exec
 resource "null_resource" "run_ansible" {
   triggers = {
+    # public_ip
     ecs_ips = join(",", [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
   }
 
@@ -73,7 +74,7 @@ resource "null_resource" "run_ansible" {
     command = <<EOT
       do-ansible-inventory --group-by-tag > hosts.ini
       ansible-playbook setup_cluster_playbook.yaml -u root --private-key ~/.ssh/ansible_rsa \
-      --extra-vars "loadbalancer_ip=${huaweicloud_lb_loadbalancer.prod_master.vip_port_id} \
+      --extra-vars "loadbalancer_ip=${huaweicloud_lb_loadbalancer.prod_master.vip_address} \
       database_host=${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]} \
       database_user=root \
       database_password=${var.postgreSQL_password} \
