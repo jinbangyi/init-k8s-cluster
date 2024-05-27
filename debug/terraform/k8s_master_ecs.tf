@@ -68,12 +68,13 @@ resource "null_resource" "run_ansible" {
   triggers = {
     # public_ip
     ecs_ips = join(",", [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
+    hosts = join(",", [for instance in huaweicloud_compute_instance.prod_master : flavor_name + " " + instance.network.0.fixed_ip_v4])
   }
 
   provisioner "local-exec" {
     # init k8s cluster
     command = <<EOT
-      echo '${self.triggers.ecs_ips}' | awk 'prod-master-xx gsub(/,/,"\n")' | awk '{print "prod-master-xx "$0}' > hosts.ini
+      echo '${self.triggers.hosts}' | awk 'gsub(/,/,"\n")' > hosts.ini
       ansible-playbook setup_cluster_playbook.yaml --extra-vars "loadbalancer_ip=${huaweicloud_lb_loadbalancer.prod_master.vip_address} \
       database_host=${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]} \
       database_user=root \
