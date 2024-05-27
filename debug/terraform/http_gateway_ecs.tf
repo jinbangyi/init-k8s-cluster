@@ -26,11 +26,12 @@ resource "huaweicloud_compute_instance" "prod_http_gateway" {
    inline = ["sudo apt update", "sudo apt install python3 -y", "echo Done!"]
 
    connection {
-     host        = self.access_ip_v4
-     type        = "ssh"
-     user        = "root"
-     port        = 2222
-     private_key = file(pathexpand("~/.ssh/ansible_rsa"))
+      host                = self.access_ip_v4
+      type                = "ssh"
+      user                = "root"
+      port                = 2222
+      private_key         = file(pathexpand("~/.ssh/ansible_rsa"))
+      bastion_host        = huaweicloud_vpc_eip.prod_jumpserver.address
     }
   }
 
