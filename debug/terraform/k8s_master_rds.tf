@@ -25,7 +25,7 @@ resource "huaweicloud_rds_instance" "k8s_pg" {
   }
 
   backup_strategy {
-    start_time = "08:00-10:00"
+    start_time = "08:00-09:00"
     keep_days  = 1
   }
 }
