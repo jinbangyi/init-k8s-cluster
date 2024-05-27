@@ -21,20 +21,25 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro:
-          - centos7
-          - centos8
-          - debian9
-          - debian10
-          - ubuntu1804
-          - ubuntu2004
-          - amazonlinux2
-          - fedora31
-          - fedora30
-          - fedora29
-        scenario:
-          - default
-          - highavailability
+        include:
+          - distro: debian10
+            scenario: default
+          - distro: ubuntu2004
+            scenario: default
+          - distro: amazonlinux2
+            scenario: default
+          - distro: ubuntu1804
+            scenario: default
+          - distro: fedora33
+            scenario: nodeploy
+          - distro: fedora32
+            scenario: highavailabilitydb
+          - distro: fedora31
+            scenario: autodeploy
+          - distro: debian11
+            scenario: highavailabilityetcd
+          - distro: rockylinux8
+            scenario: highavailabilityetcd
 
     steps:
       - name: Checkout codebase
@@ -48,10 +53,11 @@ jobs:
           python-version: "3.x"
 
       - name: Install test dependencies
-        run: pip3 install ansible molecule[docker] docker yamllint ansible-lint jmespath
+        run: pip3 install -r molecule/requirements.txt
 
       - name: Run Molecule tests
         run: molecule test --scenario-name "${{ matrix.scenario }}"
+        # continue-on-error: true
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'

@@ -1,23 +1,42 @@
 ---
 
-# k3s cluster state, options: installed, started, stopped, restarted, uninstalled
+##
+# Global/Cluster Configuration
+##
+
+# k3s state, options: installed, started, stopped, restarted, uninstalled, validated
 # (default: installed)
-k3s_cluster_state: installed
+k3s_state: installed
 
 # Use a specific k3s version, if set to "false" we will get the latest
-# k3s_release_version: v0.1.0
+# k3s_release_version: v1.19.3
 k3s_release_version: false
 
-# When multiple play_hosts are present, attempt to cluster the nodes.
+# Location of the k3s configuration file
+k3s_config_file: "/etc/rancher/k3s/config.yaml"
+
+# Location of the k3s configuration directory
+k3s_config_yaml_d_dir: "/etc/rancher/k3s/config.yaml.d"
+
+# When multiple ansible_play_hosts are present, attempt to cluster the nodes.
 # Using false will create multiple standalone nodes.
 # (default: true)
 k3s_build_cluster: true
 
 # URL for GitHub project
-k3s_github_url: https://github.com/rancher/k3s
+k3s_github_url: https://github.com/k3s-io/k3s
+
+# URL for K3s updates API
+k3s_api_url: https://update.k3s.io
+
+# Install K3s in Air Gapped scenarios
+k3s_airgap: false
 
 # Skip all tasks that validate configuration
 k3s_skip_validation: false
+
+# Skip all tasks that check environment configuration
+k3s_skip_env_checks: false
 
 # Installation directory for k3s
 k3s_install_dir: /usr/local/bin
@@ -25,12 +44,27 @@ k3s_install_dir: /usr/local/bin
 # Install using hard links rather than symbolic links
 k3s_install_hard_links: false
 
-# Path for additional Kubernetes Manifests
-# https://rancher.com/docs/k3s/latest/en/advanced/#auto-deploying-manifests
-k3s_server_manifests_dir: /var/lib/rancher/k3s/server/manifests
+# A list of templates used for configuring the server.
+k3s_server_config_yaml_d_files: []
 
-# A list of templates used for preconfigure the cluster.
+# A list of templates used for configuring the agent.
+k3s_agent_config_yaml_d_files: []
+
+# A list of templates used for pre-configuring the cluster.
 k3s_server_manifests_templates: []
+
+# A list of URLs used for pre-configuring the cluster.
+k3s_server_manifests_urls: []
+#  - url: https://some/url/to/manifest.yml
+#    filename: manifest.yml
+
+# A list of templates used for installing static pod manifests on the control plane.
+k3s_server_pod_manifests_templates: []
+
+# A list of URLs used for installing static pod manifests on the control plane.
+k3s_server_pod_manifests_urls: []
+#  - url: https://some/url/to/manifest.yml
+#    filename: manifest.yml
 
 # Use experimental features in k3s?
 k3s_use_experimental: false
@@ -38,101 +72,83 @@ k3s_use_experimental: false
 # Allow for unsupported configurations in k3s?
 k3s_use_unsupported_config: false
 
-# Use a database or etcd cluster to enable HA. Examples below:
-# MySQL:
-#   k3s_datastore_endpoint "mysql://username:password@tcp(hostname:3306)/database-name"
-# PostgreSQL:
-#   k3s_datastore_endpoint: "postgres://username:password@hostname:port/database-name"
-# Etcd:
-#   k3s_datastore_endpoint: "https://etcd-host-1:2379,https://etcd-host-2:2379,https://etcd-host-3:2379"
-k3s_datastore_endpoint: false
-
-# If using a database endpoint for HA, you can optionally set the CA file,
-# Cert file and Key file for connecting to the database using TLS.
-#
-# These need to already be present on the play hosts.
-#
-# k3s_datastore_cafile: /path/to/ca.crt
-# k3s_datastore_certfile: /path/to/cert.crt
-# k3s_datastore_keyfile: /path/to/key.pem
-
-# Use embedded Etcd for HA Datastore? (EXPERIMENTAL)
+# Enable etcd embedded datastore
 k3s_etcd_datastore: false
 
-# Disable Etcd snapshots
-k3s_etcd_disable_snapshots: false
+##
+# Systemd config
+##
 
-# Etcd snapshot cron schedule. Example below is every 12 hours.
-# k3s_etcd_snapshot_schedule_cron: "* */12 * * *"
+# Start k3s on system boot
+k3s_start_on_boot: true
 
-# Etcd snapshot retention
-# k3s_etcd_snapshot_retention: 5
+# List of required systemd units to k3s service unit.
+k3s_service_requires: []
 
-# Etcd snapshot directory
-# k3s_etcd_snapshot_directory: /server/db/snapshots
+# List of "wanted" systemd unit to k3s (weaker than "requires").
+k3s_service_wants: []
 
-# HTTPS Listening port
-k3s_https_port: 6443
+# Start k3s before a defined list of systemd units.
+k3s_service_before: []
 
-# Ensure Docker is installed on nodes
-k3s_use_docker: false
+# Start k3s after a defined list of systemd units.
+k3s_service_after: []
 
-# Disable flannel, you will need to install your own CNI driver.
-k3s_no_flannel: false
+# Dictionary of environment variables to use within systemd unit file
+# Some examples below
+k3s_service_env_vars: {}
+#  PATH: /opt/k3s/bin
+#  GOGC: 10
 
-# Flannel backend ('none', 'vxlan', 'ipsec', 'host-gw' or 'wireguard')
-# k3s_flannel_backend: vxlan
+# Location on host of a environment file to include. This must already exist on
+# the target as this role will not populate this file.
+k3s_service_env_file: false
 
-# Disable CoreDNS, you will need to install your own DNS provider.
-k3s_no_coredns: false
 
-# Cluster IP for CoreDNS service. Should be in your service-cidr range.
-# Use `false` to use default
-k3s_cluster_dns: false
+##
+# Server Configuration
+##
 
-# Cluster Domain (default: "cluster.local")
-# k3s_cluster_domain: cluster.local
+k3s_server: {}
+# k3s_server:
+#  listen-port: 6443
 
-# Disable Traefik
-k3s_no_traefik: false
+##
+# Agent Configuration
+##
 
-# Disable Service Load Balancer, you will need to install your own
-# load balancer, such as MetalLB. Must be disabled if using your own
-# load balancer service.
-k3s_no_servicelb: false
+k3s_agent: {}
+# k3s_agent:
+#   node-label:
+#     - "foo=bar"
+#     - "bish=bosh"
 
-# Do not use local storage
-k3s_no_local_storage: false
+##
+# Ansible Controller configuration
+##
 
-# Do not deploy metrics server
-k3s_no_metrics_server: false
+# Use become privileges?
+k3s_become: false
 
-# Disable default k3s scheduler
-k3s_disable_scheduler: false
+# Private registry configuration.
+# Rancher k3s documentation: https://rancher.com/docs/k3s/latest/en/installation/private-registry/
+k3s_registries:
 
-# Disable k3s cloud controller
-k3s_disable_cloud_controller: false
-
-# Disable k3s network policy controller
-k3s_disable_network_policy: false
-
-# Disable k3s default kube proxy.
-k3s_disable_kube_proxy: false
-
-# Default local storage path for local provisioner storage class, if set to "false" we will use the default
-k3s_default_local_storage_path: false
-
-# Use secret encryption at rest (EXPERIMENTAL)
-k3s_secrets_encryption: false
-
-# Enable SELinux in containerd (EXPERIMENTAL)
-k3s_enable_selinux: false
-
-# with become privileges for
-k3s_become_for_all: false
-k3s_become_for_systemd: null
-k3s_become_for_install_dir: null
-k3s_become_for_usr_local_bin: null
-k3s_become_for_package_install: null
-k3s_become_for_kubectl: null
-k3s_become_for_uninstall: null
+  mirrors:
+#    docker.io:
+#      endpoint:
+#        - "https://mycustomreg.com:5000"
+  configs:
+#    "mycustomreg:5000":
+#      auth:
+#        # this is the registry username
+#        username: xxxxxx
+#        # this is the registry password
+#        password: xxxxxx
+#      tls:
+#        # path to the cert file used in the registry
+#        cert_file:
+#        # path to the key file used in the registry
+#        key_file:
+#        # path to the ca file used in the registry
+#        ca_file:
