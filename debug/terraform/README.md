@@ -4,9 +4,9 @@
 
 1. init k8s
    - 华为云 access-key-id、access-secret
-   - export TF_VAR_postgreSQL_password={k8s master pg 密码}
+   - export TF_VAR_postgreSQL_password={k8s master pg 密码} (需要符合华为云的密码规则)
    - http gateway、jumpserver、master ecs 镜像
-   - cloudflare token
+   - ~~cloudflare token~~
    - 执行 terraform 的机器上有连接新创建 ecs 的 ssh-private-key，位于 ~/.ssh/ansible.rsa
 2. init resource
 3. init gitops
