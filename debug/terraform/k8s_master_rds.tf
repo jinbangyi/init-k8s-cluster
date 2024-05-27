@@ -2,7 +2,7 @@ variable "postgreSQL_password" {}
 
 variable "availability_zone" {
   type    = string
-  default = "docker-desktop"
+  default = "ap-southeast-3a"
 }
 
 resource "huaweicloud_rds_instance" "k8s_pg" {
