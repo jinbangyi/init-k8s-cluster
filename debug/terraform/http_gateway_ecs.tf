@@ -43,5 +43,5 @@ resource "huaweicloud_compute_instance" "prod_http_gateway" {
 
   count = 2
 
-  depends_on = [ huaweicloud_compute_instance.prod_master ]
+  depends_on = [ huaweicloud_compute_instance.prod_master, null_resource.run_ansible ]
 }
