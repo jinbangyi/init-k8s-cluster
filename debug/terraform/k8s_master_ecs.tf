@@ -60,7 +60,7 @@ resource "huaweicloud_compute_instance" "prod_master" {
 
 output master_value {
   # Ids for multiple sets of EC2 instances, merged together
-  value = join(",", [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
+  value = [for instance in huaweicloud_compute_instance.prod_master : instance]
 }
 
 # Use the IP list in local-exec
@@ -71,9 +71,10 @@ resource "null_resource" "run_ansible" {
   }
 
   provisioner "local-exec" {
+    # init k8s cluster
     command = <<EOT
-      do-ansible-inventory --group-by-tag > hosts.ini
-      ansible-playbook setup_cluster_playbook.yaml -u root --private-key ~/.ssh/ansible_rsa \
+      echo '${self.triggers.ecs_ips}' | awk 'gsub(/,/,"\n")' > hosts.ini
+      ansible-playbook setup_cluster_playbook.yaml \
       --extra-vars "loadbalancer_ip=${huaweicloud_lb_loadbalancer.prod_master.vip_address} \
       database_host=${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]} \
       database_user=root \

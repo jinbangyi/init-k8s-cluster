@@ -35,11 +35,9 @@ resource "huaweicloud_compute_instance" "prod_http_gateway" {
     }
   }
 
+  # init node and add node to cluster
   provisioner "local-exec" {
-    command = <<EOT
-      do-ansible-inventory --group-by-tag > hosts.ini
-      ansible-playbook setup_cluster_playbook.yaml -u root --private-key ~/.ssh/ansible_rsa
-    EOT
+    command = "echo ${self.access_ip_v4} > hosts.ini && ansible-playbook setup_cluster_playbook.yaml"
     working_dir = "${path.module}/../ansible"
   }
 
