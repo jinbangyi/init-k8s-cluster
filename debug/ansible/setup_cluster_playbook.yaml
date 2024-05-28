@@ -8,6 +8,7 @@
     k3s_agent:
       node-label: "{{ node_labels }}"
     k3s_server:
+      # TODO add public lb ip, add public domain
       tls-san: ["127.0.0.1", "{{ loadbalancer_ip }}"]
       datastore-endpoint: 'postgres://{{ database_user }}:{{ database_password }}@{{ database_host }}:{{ database_port }}/{{ database_name }}'
       disable:

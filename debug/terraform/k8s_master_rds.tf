@@ -41,7 +41,10 @@ resource "null_resource" "create_db_name" {
     # create database
     command = <<EOT
       ssh root@${self.triggers.master_ip} -p 2222 -i ~/.ssh/ansible_rsa -o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa" \
-      'apt update && apt install postgresql-client -y && psql "postgres://root:${var.postgreSQL_password}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres" -c "create database kube_prod;" || echo exists'
+      'apt update && apt install postgresql-client -y && \
+      psql "postgres://root:${var.postgreSQL_password}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres" -c "drop database kube_prod;" ; \
+      psql "postgres://root:${var.postgreSQL_password}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres" -c "create database kube_prod;" || \
+      echo exists'
     EOT
   }
 
