@@ -1,2 +1,2 @@
 namespace = "argocd"
-cluster_name = "kind-devopsdays"
+cluster_name = "new-prod"

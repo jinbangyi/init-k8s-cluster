@@ -34,16 +34,19 @@ resource "helm_release" "argocd" {
   name             = "argocd"
   namespace        = "argocd"
   repository       = "https://argoproj.github.io/argo-helm"
-  create_namespace = true
-}
-
-resource "helm_release" "argocd-apps" {
-  depends_on = [helm_release.argocd]
-  chart      = "argocd-apps"
-  name       = "argocd-apps"
-  namespace  = "argocd"
-  repository = "https://argoproj.github.io/argo-helm"
   values = [
     file("argocd/applications.yaml")
   ]
+  create_namespace = true
 }
+
+# resource "helm_release" "argocd-apps" {
+#   depends_on = [helm_release.argocd]
+#   chart      = "argocd-apps"
+#   name       = "argocd-apps"
+#   namespace  = "argocd"
+#   repository = "https://argoproj.github.io/argo-helm"
+#   values = [
+#     file("argocd/applications.yaml")
+#   ]
+# }
