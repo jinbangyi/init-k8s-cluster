@@ -8,7 +8,7 @@
     k3s_agent:
       node-label: "{{ node_labels }}"
     k3s_server:
-      tls_san: ["127.0.0.1", "{{ loadbalancer_ip }}"]
+      tls-san: ["127.0.0.1", "{{ loadbalancer_ip }}"]
       datastore-endpoint: 'postgres://{{ database_user }}:{{ database_password }}@{{ database_host }}:{{ database_port }}/{{ database_name }}'
       disable:
         - traefik
