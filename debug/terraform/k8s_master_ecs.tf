@@ -2,7 +2,7 @@
 resource "huaweicloud_compute_instance" "prod_master" {
   name               = "prod-master-00${count.index}"
   hostname           = "prod-master-00${count.index}"
-  key_pair           = "benny"
+  key_pair           = "aws-manager"
   system_disk_size   = 40
   image_id           = data.huaweicloud_images_image.default.id
   flavor_id          = data.huaweicloud_compute_flavors.prod_http_gateway.ids[0]
@@ -81,28 +81,14 @@ resource "null_resource" "run_ansible" {
       database_password=${var.postgreSQL_password} \
       database_name=kube_prod \
       database_port=5432 \
-      master_ip_string=${self.triggers.ecs_ips}" \
+      master_ip_string=${self.triggers.ecs_ips} \
+      node_labels=['byterum.category=devops','byterum.group=http-gateway','byterum.network=private']" \
       --ssh-extra-args '-o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa"'
     EOT
     working_dir = "${path.module}/../ansible"
   }
 
   depends_on = [ huaweicloud_compute_instance.prod_master, null_resource.create_db_name ]
-}
-
-resource "kubernetes_labels" "prod_http_gateway_labels" {
-  api_version = "v1"
-  kind        = "Node"
-  metadata {
-    name = "prod-master-00${count.index}"
-  }
-  labels = {
-    "byterum.category" = "devops"
-    "byterum.group" = "master"
-    "byterum.network" = "private"
-  }
-
-  count = 3
 }
 
 # echo 'prod-master-dae59278-0fbb-43c3-9fca-a3a3980ab051 ansible_host=10.6.17.12,prod-master-1adec157-d127-4cab-a0dc-2513f4bcbb45 ansible_host=10.6.16.126,prod-master-7f483e74-edaa-47e6-ac9c-612690c2f1d5 ansible_host=10.6.18.27' | awk 'gsub(/,/,"\n")' > hosts.ini 
