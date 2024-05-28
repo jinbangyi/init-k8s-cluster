@@ -25,7 +25,12 @@
   - s3 作为状态存储中心
   - ~~创建一个 ecs 用于执行 ansible 命令~~
 - 初始化 k8s 集群
-  - 初始化一个 pg 节点给 master
+  - ~~初始化一个 pg 节点给 master~~
+  - ~~使用 ansible 初始化 k3s~~
+  - 给节点添加合适的 label
+  - 添加 devops 节点
+  - 创建 apisix
+  - 创建 argocd
 
 ## list
 

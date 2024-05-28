@@ -33,6 +33,20 @@ resource "huaweicloud_vpc_eip" "prod_gateway_lb" {
   }
 }
 
+# 创建 master lb eip
+resource "huaweicloud_vpc_eip" "prod_master_lb" {
+  publicip {
+    type = "5_bgp"
+  }
+  bandwidth {
+    name        = "prod_master_lb"
+    # 1-300
+    size        = 200
+    share_type  = "PER"
+    charge_mode = "traffic"
+  }
+}
+
 # 创建 jumpserver eip
 resource "huaweicloud_vpc_eip" "prod_jumpserver" {
   publicip {

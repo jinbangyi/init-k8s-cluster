@@ -5,11 +5,11 @@
   vars:
     # default_k3s_tls_san: ["127.0.0.1", "{{ loadbalancer_ip }}"]
     k3s_release_version: 'v1.25.11+k3s1'
+    k3s_agent:
+      node-label: "{{ node_labels }}"
     k3s_server:
       tls_san: ["127.0.0.1", "{{ loadbalancer_ip }}"]
       datastore-endpoint: 'postgres://{{ database_user }}:{{ database_password }}@{{ database_host }}:{{ database_port }}/{{ database_name }}'
-      # cluster-cidr: 172.20.0.0/16
-      # flannel-backend: 'eth0'
       disable:
         - traefik
         - coredns
@@ -18,7 +18,6 @@
   pre_tasks:
     - name: Set each node to be a control node
       ansible.builtin.set_fact:
-        # k3s_node_ip_address: "{{ ansible_ssh_host }}"
         k3s_control_node: true
         # tls-san: "{{ default_k3s_tls_san + master_ip_string.split(',') }}"
       when: inventory_hostname.startswith('prod-master-')

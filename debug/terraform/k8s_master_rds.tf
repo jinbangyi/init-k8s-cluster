@@ -30,3 +30,20 @@ resource "huaweicloud_rds_instance" "k8s_pg" {
     keep_days  = 1
   }
 }
+
+resource "null_resource" "create_db_name" {
+  triggers = {
+    # ip
+    master_ip = huaweicloud_compute_instance.prod_master.0.network.0.fixed_ip_v4
+  }
+
+  provisioner "local-exec" {
+    # create database
+    command = <<EOT
+      ssh root@${master_ip} -p 2222 -i ~/.ssh/ansible_rsa -o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa" \
+      'apt update && apt install postgresql-client -y && psql "postgres://root:${var.postgreSQL_password}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres" -c "create database kube_prod;"'
+    EOT
+  }
+
+  depends_on = [ huaweicloud_rds_instance.k8s_pg ]
+}

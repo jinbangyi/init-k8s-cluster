@@ -1,3 +1,8 @@
+# variable prod_http_gateway_labels {
+#   type = list(string)
+#   default = [ "byterum.category=devops", "byterum.group=http-gateway", "byterum.network=private" ]
+# }
+
 resource "huaweicloud_compute_instance" "prod_http_gateway" {
   name               = "prod-gateway-00${count.index}"
   hostname           = "prod-gateway-00${count.index}"
@@ -44,4 +49,19 @@ resource "huaweicloud_compute_instance" "prod_http_gateway" {
   count = 2
 
   depends_on = [ huaweicloud_compute_instance.prod_master, null_resource.run_ansible ]
+}
+
+resource "kubernetes_labels" "prod_http_gateway_labels" {
+  api_version = "v1"
+  kind        = "Node"
+  metadata {
+    name = "prod-gateway-00${count.index}"
+  }
+  labels = {
+    "byterum.category" = "devops"
+    "byterum.group" = "http-gateway"
+    "byterum.network" = "private"
+  }
+
+  count = 2
 }
