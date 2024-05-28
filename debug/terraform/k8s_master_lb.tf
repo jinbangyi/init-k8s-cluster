@@ -5,7 +5,7 @@ resource "huaweicloud_lb_loadbalancer" "prod_master" {
 }
 
 # 关联 eip 至 lb
-resource "huaweicloud_vpc_eip_associate" "http_gateway" {
+resource "huaweicloud_vpc_eip_associate" "prod_master" {
   public_ip = huaweicloud_vpc_eip.prod_master_lb.address
   port_id   = huaweicloud_lb_loadbalancer.prod_master.vip_port_id
 }
