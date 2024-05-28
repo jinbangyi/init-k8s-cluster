@@ -7,6 +7,17 @@ terraform {
   }
   required_version = ">= 0.13"
 
+  required_providers {
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+      version = "2.21.1"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "2.10.1"
+    }
+  }
+
   # backend "s3" {
   #   bucket   = "devops"
   #   key      = "init/terraform/terraform.tfstate"
@@ -21,4 +32,16 @@ terraform {
 
 provider "huaweicloud" {
   region = "ap-southeast-3"
+}
+
+provider "kubernetes" {
+  config_path    = "~/.kube/config"
+  config_context = var.cluster_name
+}
+
+provider "helm" {
+  kubernetes {
+    config_path    = "~/.kube/config"
+    config_context = var.cluster_name
+  }
 }

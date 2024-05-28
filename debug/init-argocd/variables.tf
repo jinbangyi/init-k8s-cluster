@@ -1,4 +1,7 @@
-variable "cluster-context" {
-  type    = string
-  default = "docker-desktop"
+variable "namespace" {
+  type = string
+}
+
+variable "cluster_name" {
+  type = string
 }
