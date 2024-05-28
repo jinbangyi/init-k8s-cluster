@@ -9,7 +9,7 @@
       tls_san: ["127.0.0.1", "{{ loadbalancer_ip }}"]
       datastore-endpoint: 'postgres://{{ database_user }}:{{ database_password }}@{{ database_host }}:{{ database_port }}/{{ database_name }}'
       # cluster-cidr: 172.20.0.0/16
-      flannel-backend: 'eth0'
+      # flannel-backend: 'eth0'
       disable:
         - traefik
         - coredns
