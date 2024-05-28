@@ -6,7 +6,7 @@
     default_k3s_tls_san: ["127.0.0.1", "{{ loadbalancer_ip }}"]
     k3s_release_version: 'v1.25.11+k3s1'
     k3s_server:
-      datastore-endpoint: postgres://{{ database_user }}:{{ database_password }}@{{ database_host }}:{{ database_port }}/{{ database_name }}
+      datastore-endpoint: 'postgres://{{ database_user }}:{{ database_password }}@{{ database_host }}:{{ database_port }}/{{ database_name }}'
       # cluster-cidr: 172.20.0.0/16
       flannel-backend: 'eth0'
       disable:
@@ -21,8 +21,5 @@
         k3s_control_node: true
         tls-san: "{{ default_k3s_tls_san + master_ip_string.split(',') }}"
       when: inventory_hostname is startswith('prod-master-')
-    - name: set tls san and ssh port
-      ansible.builtin.set_fact:   
-        ansible_port: 2222
   roles:
     - role: 'ansible-role-k3s'

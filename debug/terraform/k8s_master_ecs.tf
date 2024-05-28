@@ -89,3 +89,14 @@ resource "null_resource" "run_ansible" {
 
   depends_on = [ huaweicloud_compute_instance.prod_master ]
 }
+
+
+# echo 'prod-master-dae59278-0fbb-43c3-9fca-a3a3980ab051 ansible_host=10.6.17.12,prod-master-1adec157-d127-4cab-a0dc-2513f4bcbb45 ansible_host=10.6.16.126,prod-master-7f483e74-edaa-47e6-ac9c-612690c2f1d5 ansible_host=10.6.18.27' | awk 'gsub(/,/,"\n")' > hosts.ini 
+# ansible-playbook setup_cluster_playbook.yaml --extra-vars "loadbalancer_ip=10.6.18.81 \
+# database_host=5cca2ab8fc234ad18dfdd575f8d9bd57in03.internal.ap-southeast-3.postgresql.rds.myhuaweicloud.com \
+# database_user=root \
+# database_password=nftgoM3zLg1xDWdOmbGZQKqfV \
+# database_name=kube_prod \
+# database_port=5432 \
+# master_ip_string=10.6.17.12,10.6.16.126,10.6.18.27" \
+# --ssh-extra-args '-o ProxyCommand="ssh -p 2222 -W %h:%p -q root@159.138.104.88 -i ~/.ssh/ansible_rsa"'
