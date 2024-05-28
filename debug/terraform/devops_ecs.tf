@@ -1,7 +1,7 @@
 resource "huaweicloud_evs_volume" "prod_devops" {
   name              = "prod-devops-00${count.index}"
   availability_zone = data.huaweicloud_availability_zones.default.names[0]
-  volume_type       = "SAS"
+  volume_type       = "GPSSD"
   size              = 300
 
   count = 1
@@ -33,12 +33,15 @@ resource "huaweicloud_compute_instance" "prod_devops" {
   provisioner "local-exec" {
     command = <<EOT
     echo ${self.access_ip_v4} > hosts.ini
-    ansible-playbook --extra-vars "node_labels=['byterum.category=devops','byterum.group=management','byterum.network=private']" setup_cluster_playbook.yaml
+    ansible-playbook --extra-vars "node_labels=['byterum.category=devops','byterum.group=management','byterum.network=private']" setup_cluster_playbook.yaml \
+    --ssh-extra-args '-o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa" StrictHostKeyChecking=no'
     EOT
     working_dir = "${path.module}/../ansible"
   }
 
   count = 1
+
+  depends_on = [ null_resource.run_ansible ]
 }
 
 resource "huaweicloud_compute_volume_attach" "attached" {
