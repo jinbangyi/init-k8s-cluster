@@ -1,8 +1,9 @@
 # master
 resource "huaweicloud_compute_instance" "prod_master" {
+  # TODO names from var
   name               = "prod-master-00${count.index}"
   hostname           = "prod-master-00${count.index}"
-  key_pair           = "aws-manager"
+  key_pair           = var.prod_ecs_keypair
   system_disk_size   = 40
   image_id           = data.huaweicloud_images_image.default.id
   flavor_id          = data.huaweicloud_compute_flavors.prod_http_gateway.ids[0]
@@ -42,16 +43,6 @@ resource "huaweicloud_compute_instance" "prod_master" {
   depends_on = [ huaweicloud_rds_instance.k8s_pg ]
 }
 
-# # Generate a comma-separated string of IP addresses
-# variable "master_ip_string" {
-#   value = join(",", [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
-# }
-
-# output master_value {
-#   # Ids for multiple sets of EC2 instances, merged together
-#   value = [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4]
-# }
-
 # Use the IP list in local-exec
 resource "null_resource" "run_ansible" {
   triggers = {
@@ -60,8 +51,8 @@ resource "null_resource" "run_ansible" {
   }
 
   provisioner "local-exec" {
-    # init k8s cluster
     command = <<EOT
+      # init k8s cluster
       echo '${self.triggers.hosts}' | awk 'gsub(/,/,"\n")' > hosts.ini
       echo ansible-playbook setup_cluster_playbook.yaml --extra-vars "loadbalancer_ip=${huaweicloud_lb_loadbalancer.prod_master.vip_address} \
       database_host=${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]} \
@@ -72,7 +63,7 @@ resource "null_resource" "run_ansible" {
       master_ip_string=${self.triggers.ecs_ips} \
       node_labels=['byterum.category=devops','byterum.group=master','byterum.network=private']" \
       --ssh-extra-args '-o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa"' \
-      > run.sh
+      >> run.sh
     EOT
     working_dir = "${path.module}/../ansible"
   }
