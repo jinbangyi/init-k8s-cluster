@@ -59,7 +59,7 @@ resource "huaweicloud_compute_instance" "prod_http_gateway" {
 # add nodes to cluster
 resource "null_resource" "run_ansible" {
   triggers = {
-    hosts = join(",", [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
+    hosts = join(",", [for instance in huaweicloud_compute_instance.prod_http_gateway : instance.network.0.fixed_ip_v4])
   }
 
   provisioner "local-exec" {
