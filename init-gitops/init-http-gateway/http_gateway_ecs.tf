@@ -25,8 +25,8 @@ resource "huaweicloud_compute_instance" "prod_http_gateway" {
   flavor_id          = data.huaweicloud_compute_flavors.prod_http_gateway.ids[0]
   availability_zone  = data.huaweicloud_availability_zones.default.names[0]
   security_group_ids = [
-    huaweicloud_networking_secgroup.prod_default.id,
-    huaweicloud_networking_secgroup.prod_private-default.id,
+    data.prod_default.id,
+    data.prod_private-default.id,
     huaweicloud_networking_secgroup.prod_private-http_gateway.id,
   ]
 
@@ -37,7 +37,7 @@ resource "huaweicloud_compute_instance" "prod_http_gateway" {
   }
 
   network {
-    uuid = huaweicloud_vpc_subnet.prod_private.id
+    uuid = data.prod_private.id
   }
 
   provisioner "remote-exec" {

@@ -1,7 +1,7 @@
 # --------------------- 创建 http gateway lb ---------------
 resource "huaweicloud_lb_loadbalancer" "prod_http_gateway" {
   name          = "prod_http_gateway"
-  vip_subnet_id = huaweicloud_vpc_subnet.prod_private.ipv4_subnet_id
+  vip_subnet_id = data.prod_private.ipv4_subnet_id
 }
 
 # 关联 eip 至 lb
@@ -32,7 +32,7 @@ resource "huaweicloud_lb_member" "member_1" {
   protocol_port = 443
   weight        = 1
   pool_id       = huaweicloud_lb_pool.prod_http_gateway.id
-  subnet_id     = huaweicloud_vpc_subnet.prod_private.ipv4_subnet_id
+  subnet_id     = data.prod_private.ipv4_subnet_id
 
   count = 2
 }
