@@ -65,7 +65,7 @@ resource "null_resource" "run_ansible" {
       --ssh-extra-args '-o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa"' \
       >> run.sh
     EOT
-    working_dir = "${path.module}/../ansible"
+    working_dir = "${path.module}/ansible"
   }
 
   depends_on = [ huaweicloud_compute_instance.prod_master, null_resource.create_db_name ]

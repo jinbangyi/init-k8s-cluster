@@ -41,7 +41,7 @@ resource "null_resource" "create_db_name" {
       psql "postgres://root:${var.postgreSQL_password}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres" -c "create database kube_prod;" || \
       echo exists' > run.sh
     EOT
-    working_dir = "${path.module}/../ansible"
+    working_dir = "${path.module}/ansible"
   }
 
   depends_on = [ huaweicloud_rds_instance.k8s_pg ]
