@@ -63,7 +63,7 @@ resource "null_resource" "run_ansible" {
       database_port=5432 \
       master_ip_string=${self.triggers.ecs_ips} \
       node_labels=[$Xbyterum.category=devops$X,$Xbyterum.group=master$X,$Xbyterum.network=private$X]" \
-      --ssh-extra-args $X-o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa"$X \
+      --ssh-extra-args $X-o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa -o StrictHostKeyChecking=no"$X \
       >> run.sh
     EOT
     working_dir = "${path.module}/ansible"

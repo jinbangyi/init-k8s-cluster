@@ -20,5 +20,6 @@ export TF_VAR_prod_ecs_keypair='xx'
 terraform init
 terraform apply
 
+# 需要在合适的地方添加引号
 /bin/bash ansible/run.sh
 ```
