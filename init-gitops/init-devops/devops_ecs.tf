@@ -65,7 +65,7 @@ resource "huaweicloud_compute_volume_attach" "attached" {
       user                = "root"
       port                = 2222
       private_key         = file(pathexpand("~/.ssh/ansible_rsa"))
-      bastion_host        = huaweicloud_vpc_eip.prod_jumpserver.address
+      bastion_host        = var.prod_jumpserver_ip
     }
   }
 
@@ -77,7 +77,7 @@ resource "huaweicloud_compute_volume_attach" "attached" {
 # add nodes to cluster
 resource "null_resource" "run_ansible" {
   triggers = {
-    hosts = join(",", [for instance in huaweicloud_compute_instance.prod_http_gateway : instance.network.0.fixed_ip_v4])
+    hosts = join(",", [for instance in huaweicloud_compute_instance.prod_devops : instance.network.0.fixed_ip_v4])
   }
 
   provisioner "local-exec" {
