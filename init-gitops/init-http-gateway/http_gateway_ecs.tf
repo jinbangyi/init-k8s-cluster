@@ -70,7 +70,7 @@ resource "null_resource" "run_ansible" {
       k3s_token=${var.prod_k8s_token} \
       extra_agent_args=' --node-label byterum.category=devops --node-label byterum.group=http-gateway --node-label byterum.network=private --flannel-iface=eth0'\" \
       --ssh-extra-args '-o ProxyCommand=\"ssh -p 2222 -W %h:%p -q root@${var.prod_jumpserver_ip} -i ~/.ssh/ansible_rsa -o StrictHostKeyChecking=no\"' \
-      >> run.sh
+      " > run.sh
     EOT
     working_dir = "${path.module}/ansible"
   }
