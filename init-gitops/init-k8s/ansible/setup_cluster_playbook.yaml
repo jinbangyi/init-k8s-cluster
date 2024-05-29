@@ -3,12 +3,11 @@
   hosts: all
   become: True
   vars:
-    # default_k3s_tls_san: ["127.0.0.1", "{{ loadbalancer_ip }}"]
     k3s_release_version: 'v1.25.11+k3s1'
     k3s_server:
       node-label: "{{ node_labels }}"
       # TODO add public lb ip, add public domain
-      tls-san: ["127.0.0.1", "{{ loadbalancer_ip }}"]
+      tls-san: "{{ loadbalancer_ip + master_ip_string }}"
       flannel-iface: 'eth0'
       datastore-endpoint: 'postgres://{{ database_user }}:{{ database_password }}@{{ database_host }}:{{ database_port }}/{{ database_name }}'
       disable:

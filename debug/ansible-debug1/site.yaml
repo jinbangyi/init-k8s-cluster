@@ -1,9 +1,9 @@
 ---
-- name: Set up k3s cluster
+- name: add agent to k3s
   hosts: all
   become: True
   vars:
     apiserver_endpoint: "{{ loadbalancer_ip }}"
-    k3s_version: ""
+    node_labels: "{{ node_labels }}"
   roles:
     - role: 'ansible-role-k3s'

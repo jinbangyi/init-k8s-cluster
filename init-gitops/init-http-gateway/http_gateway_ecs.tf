@@ -19,7 +19,7 @@ data "huaweicloud_images_image" "default" {
 resource "huaweicloud_compute_instance" "prod_http_gateway" {
   name               = "prod-gateway-00${count.index}"
   hostname           = "prod-gateway-00${count.index}"
-  key_pair           = "aws-manager"
+  key_pair           = var.prod_ecs_keypair
   system_disk_size   = 40
   image_id           = data.huaweicloud_images_image.default.id
   flavor_id          = data.huaweicloud_compute_flavors.prod_http_gateway.ids[0]
@@ -54,4 +54,27 @@ resource "huaweicloud_compute_instance" "prod_http_gateway" {
   }
 
   count = 2
+}
+
+# add nodes to cluster
+resource "null_resource" "run_ansible" {
+  triggers = {
+    hosts = join(",", [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+      X='"'"'
+      echo '# add agent to  cluster \
+      echo "${self.triggers.hosts}" | awk $Xgsub(/,/,"\n")$X > hosts.ini
+      echo ansible-playbook setup_cluster_playbook.yaml --extra-vars "loadbalancer_ip=${var.prod_master_lb} \
+      k3s_token=${var.prod_k8s_token} \
+      extra_agent_args=' --node-label byterum.category=devops --node-label byterum.group=http-gateway --node-label byterum.network=private --flannel-iface=eth0'" \
+      --ssh-extra-args $X-o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${var.prod_jumpserver_ip} -i ~/.ssh/ansible_rsa -o StrictHostKeyChecking=no"$X \
+      >> run.sh
+    EOT
+    working_dir = "${path.module}/ansible"
+  }
+
+  depends_on = [ huaweicloud_compute_instance.prod_http_gateway ]
 }

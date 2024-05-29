@@ -10,12 +10,14 @@ chmod 400 ~/.ssh/ansible_rsa
 export HW_SECRET_KEY='xx'
 # 华为云 access key
 export HW_ACCESS_KEY='xx'
-# 需要满足华为云的 pg 账号密码规则
-export TF_VAR_postgreSQL_password='xx'
-# master 节点的公网域名
-export TF_VAR_prod_master_domain='xx'
+# master 节点的 lb 域名
+export TF_VAR_prod_master_lb='xx'
 # 华为云密钥对名字
 export TF_VAR_prod_ecs_keypair='xx'
+# JUMP ip
+export TF_VAR_prod_jumpserver_ip='xx'
+# k8s token
+export TF_VAR_prod_k8s_token='xx'
 
 terraform init
 terraform apply

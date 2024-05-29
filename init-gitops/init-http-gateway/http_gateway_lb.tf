@@ -28,19 +28,13 @@ resource "huaweicloud_lb_pool" "prod_http_gateway" {
 
 # 添加 ecs 至 lb
 resource "huaweicloud_lb_member" "member_1" {
-  address       = huaweicloud_compute_instance.prod_http_gateway[0].access_ip_v4
+  address       = huaweicloud_compute_instance.prod_http_gateway[count.index].access_ip_v4
   protocol_port = 443
   weight        = 1
   pool_id       = huaweicloud_lb_pool.prod_http_gateway.id
   subnet_id     = huaweicloud_vpc_subnet.prod_private.ipv4_subnet_id
-}
 
-resource "huaweicloud_lb_member" "member_2" {
-  address       = huaweicloud_compute_instance.prod_http_gateway[1].access_ip_v4
-  protocol_port = 443
-  weight        = 1
-  pool_id       = huaweicloud_lb_pool.prod_http_gateway.id
-  subnet_id     = huaweicloud_vpc_subnet.prod_private.ipv4_subnet_id
+  count = 2
 }
 
 # TODO 配置访问日志
