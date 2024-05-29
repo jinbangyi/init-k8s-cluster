@@ -4,7 +4,7 @@ data "huaweicloud_availability_zones" "default" {}
 # gateway
 data "huaweicloud_compute_flavors" "prod_devops" {
   availability_zone = data.huaweicloud_availability_zones.default.names[0]
-  performance_type  = "normal"
+  performance_type  = "highmem"
   cpu_core_count    = 4
   memory_size       = 32
 }
