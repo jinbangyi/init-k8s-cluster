@@ -1,0 +1,35 @@
+configs: 
+  params:
+    server.insecure: true
+
+  clusterCredentials: 
+    - name: new-prod
+      server: https://10.5.0.86:6443
+      labels: {}
+      annotations: {}
+      config: 
+        bearerToken: "eyJhbGciOiJSUzI1NiIsImtpZCI6IkZ5LTNKY0M0YWQtUW1sT0hDWlFncEVjTDVFYmRBUy0zd3VQZTdld3FHazAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJzdXBlci1hZG1pbi10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJzdXBlci1hZG1pbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImI4YTYwMDNlLTQ4YzYtNDVlOC1iNGVhLTc1Yzk0MTBjMWEzNiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlLXN5c3RlbTpzdXBlci1hZG1pbiJ9.pIPJ35zL_T0Dt6eFvqwKyuGsv065rZhodDbOj4ub5B1M1TUntIaVgYlySm75ZBAu-HLl9JvsHM5zbzg8pGE0WBvSy86viPWzez3tUBfL_nOq-1kWvreauj6Ql1-zsLMg1hfe5UEcDdJeajYLVqJ9csBh35J9GCAIcSngbWop_Qg_UTIXyx7UFS6mSRdholDZeImDws-Qu1d_HWxeya61mxyHG3Yeyv4qv4THjck58zwBsTnDW7nOjOL2J2TXkeTPBE-Z0RdRJHi-04LYLoZPPMt1HYYpZ0JMtqXMEtql30EVMXjlRlIGyak-hp59zdrhE1f2OOH5ce74fRD0dApMrw"
+        tlsClientConfig:
+          insecure: true
+  ssh: 
+    extraHosts: 'gitlab-ssh.nftgo.dev ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDBrOCu0u5AkhXMswfABE9h0vZTMiINGQnDu7QZOIpWxmM3JbRl4VsfTQpSc1RhG/bitrWiPtCMrhhGAk2LPOCmqBcgEj7QQ9EVQM15P4pIi4AaIflhSGa0DV/sHDeJ0Vi7V3PUbAYAJEaifyXl8aP0aUlY2NmFdN5ikdMFo4fVCFRfypff5VLFNMjNW+YNNPG+juu0TF5CdhSGVF9W46UfNdqjhqKsv86FsPa4KuHn0EhYVOKJiMy+ujw/MEy9rWasPAhiqH8tFf0lxi6QtfcEwUbKvcll0cqxdoPcjLVxPjt0bgL2W1SSv1IZifC1oCrkSbl4vBeMAz9Y7qsJlicY4m5YT4+v2Yiw5MHiWoi0JHBfZIWPXmSbF7/w8kQsxFDtuEB6/R1JhDUbq3OwFGWZxafUtRBmoUa9KRK+2/U9MN8RBE3UF7VsaCZag23FYPzyaG8MGCSbz4ep5wrkdwe7V/M9cWcAWGCmGa+ig69LOSh6oTwFN7VC/LcQeKmW06U='
+  repositories: 
+    gitops-default: 
+      url: 'git@gitlab-ssh.nftgo.dev:byterum/gitops.git'
+
+global: 
+  affinity: 
+    nodeAffinity:
+      matchExpressions:
+      - key: byterum.category
+        operator: In
+        values:
+        - devops
+      - key: byterum.group
+        operator: In
+        values:
+        - management
+
+server:
+  extensions:
+    enabled: true

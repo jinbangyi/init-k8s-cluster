@@ -1,0 +1,9 @@
+---
+- name: Set up k3s cluster
+  hosts: all
+  become: True
+  vars:
+    apiserver_endpoint: "{{ loadbalancer_ip }}"
+    k3s_version: ""
+  roles:
+    - role: 'ansible-role-k3s'
