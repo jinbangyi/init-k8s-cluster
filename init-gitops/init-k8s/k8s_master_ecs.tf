@@ -52,8 +52,9 @@ resource "null_resource" "run_ansible" {
 
   provisioner "local-exec" {
     command = <<EOT
-      # init k8s cluster
-      echo '${self.triggers.hosts}' | awk 'gsub(/,/,"\n")' > hosts.ini
+      X='"'"'
+      echo '# init k8s cluster \
+      echo "${self.triggers.hosts}" | awk $Xgsub(/,/,"\n")$X > hosts.ini
       echo ansible-playbook setup_cluster_playbook.yaml --extra-vars "loadbalancer_ip=${huaweicloud_lb_loadbalancer.prod_master.vip_address} \
       database_host=${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]} \
       database_user=root \
@@ -61,8 +62,8 @@ resource "null_resource" "run_ansible" {
       database_name=kube_prod \
       database_port=5432 \
       master_ip_string=${self.triggers.ecs_ips} \
-      node_labels=['byterum.category=devops','byterum.group=master','byterum.network=private']" \
-      --ssh-extra-args '-o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa"' \
+      node_labels=[$Xbyterum.category=devops$X,$Xbyterum.group=master$X,$Xbyterum.network=private$X]" \
+      --ssh-extra-args $X-o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa"$X \
       >> run.sh
     EOT
     working_dir = "${path.module}/ansible"
