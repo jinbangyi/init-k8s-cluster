@@ -14,3 +14,7 @@ variable "prod_ecs_keypair" {
 variable "prod_master_lb" {
   type = string
 }
+
+variable "prod_ecs_image_name" {
+  type = string
+}
