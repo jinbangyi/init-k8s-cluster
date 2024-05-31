@@ -62,7 +62,7 @@ resource "null_resource" "run_ansible" {
       database_name=kube_prod \
       database_port=5432 \
       tls_ips=${self.triggers.tls_ips} \
-      node_labels=\"['byterum.category=devops','byterum.group=master','byterum.network=private']\" \
+      node_labels=['byterum.category=devops','byterum.group=master','byterum.network=private']\" \
       --ssh-extra-args '-o ProxyCommand=\"ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa -o StrictHostKeyChecking=no\"'" \
       >> run.sh
     EOT
