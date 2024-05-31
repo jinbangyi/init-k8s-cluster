@@ -22,3 +22,9 @@
 #     extra_agent_args: "{{ extra_agent_args }}"
 #   roles:
 #     - role: 'k3s_upgrade'
+
+# - name: uninstall k3s agent
+#   hosts: all
+#   become: True
+#   roles:
+#     - role: 'k3s_uninstall'
