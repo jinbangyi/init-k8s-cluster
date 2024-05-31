@@ -54,6 +54,7 @@ resource "huaweicloud_compute_instance" "prod_devops" {
 resource "huaweicloud_compute_volume_attach" "attached" {
   instance_id = huaweicloud_compute_instance.prod_devops[count.index].id
   volume_id   = huaweicloud_evs_volume.prod_devops[count.index].id
+  device      = "/dev/vdb"
 
   provisioner "remote-exec" {
     # mount volume to /mnt/data
