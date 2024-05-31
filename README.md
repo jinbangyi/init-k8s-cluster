@@ -9,8 +9,11 @@
 ## steps
 
 ```bash
+ROOT_DIR="~/temp/prod"
+mkdir -p $ROOT_DIR && cd $ROOT_DIR
+
 # clone code
-git clone https://github.com/jinbangyi/init-k8s-cluster.git
+git clone https://github.com/jinbangyi/init-k8s-cluster.git && git checkout dev
 cd init-k8s-cluster
 
 # download terraform
@@ -35,32 +38,31 @@ export HW_SECRET_KEY='TODO'
 # 华为云 apikey
 export HW_ACCESS_KEY='TODO'
 
-# generate sshkey and upload to huaweiyun
+# generate sshkey and upload to huaweicloud
 cd init-sshkey
 terraform init
 terraform apply -auto-approve
-# 备份一份
-mkdir -p ~/.ssh && cp huawei-key.pem ~/.ssh/
+# 备份
+mkdir -p ~/.ssh && cp huawei-key.pem ~/.ssh/ && cp huawei-key.pem $ROOT_DIR/
 
-cd ../init-k8s
 # ansible 执行 key
-cp huawei-key.pem ~/.ssh/ansible_rsa && chmod 400 ~/.ssh/ansible_rsa
+cp ~/.ssh/huawei-key.pem ~/.ssh/ansible_rsa && chmod 400 ~/.ssh/ansible_rsa
 
-# master 节点 pg，需要满足华为云的 pg 账号密码规则
-export TF_VAR_postgreSQL_password='TODO'
 # master 节点的公网域名
 export TF_VAR_prod_master_domain='TODO'
+# ecs 镜像的名字
+export TF_VAR_prod_ecs_image_name='TODO'
 
+cd ../init-k8s
 terraform init
 terraform apply -auto-approve
 
-
-# 需要在合适的地方添加引号
 /bin/bash ansible/run.sh
+source ansible/temp.env
 
+sed -i "s/<replace>/$MASTER_LB_IP/" ansible/config.yaml
+cp ansible/config.yaml $ROOT_DIR/
 
-cd init-gitops/init-k8s
+echo "PG_PASSWORD=$PG_PASSWORD" >> $ROOT_DIR/README.pass
 
-# 华为云 rds pg 账号密码，需要符合华为云 rds 密码规则
-export TF_VAR_postgreSQL_password=''
 ```

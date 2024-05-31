@@ -1,0 +1,24 @@
+---
+- name: Upload the k8s admin manifest to the remote host
+  copy:
+    src: "{{ playbook_dir }}/admin.yaml"
+    dest: /tmp/admin.yaml
+    mode: '0755'
+
+- name: Execute the script on the remote host
+  shell: kubectl apply -f /tmp/admin.yaml
+
+- name: Upload the script to the remote host
+  copy:
+    src: "{{ playbook_dir }}/generate-config.sh"
+    dest: /tmp/generate_output.sh
+    mode: '0755'
+
+- name: Execute the script on the remote host
+  shell: /tmp/generate_output.sh > /tmp/config.yaml
+
+- name: Fetch the generated file
+  fetch:
+    src: /tmp/config.yaml
+    dest: "{{ playbook_dir }}/config.yaml"
+    flat: yes

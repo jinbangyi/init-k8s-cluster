@@ -1,4 +1,8 @@
-variable "postgreSQL_password" {}
+resource "random_password" "prod_master_pg" {
+  length           = 12
+  special          = true
+  override_special = "!@#%^*-_=+"
+}
 
 resource "huaweicloud_rds_instance" "k8s_pg" {
   name                = "prod-k8s_pg"
@@ -12,7 +16,7 @@ resource "huaweicloud_rds_instance" "k8s_pg" {
   db {
     type     = "PostgreSQL"
     version  = "14"
-    password = var.postgreSQL_password
+    password = random_password.prod_master_pg.result
   }
 
   volume {
@@ -26,6 +30,7 @@ resource "huaweicloud_rds_instance" "k8s_pg" {
   }
 }
 
+# generate create db script
 resource "null_resource" "create_db_name" {
   triggers = {
     # ip
@@ -34,13 +39,17 @@ resource "null_resource" "create_db_name" {
 
   provisioner "local-exec" {
     command = <<EOT
-      echo '# create database \
-      ssh root@${self.triggers.master_ip} -p 2222 -i ~/.ssh/ansible_rsa \
-      -o ProxyCommand="ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa -o StrictHostKeyChecking=no" \
-      "apt update && apt install postgresql-client -y && \
-      psql "postgres://root:${var.postgreSQL_password}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres -c "drop database kube_prod;" ; \
-      psql "postgres://root:${var.postgreSQL_password}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres -c "create database kube_prod;" || \
-      echo exists"' > run.sh
+      echo "# create database" > run.sh
+      echo "ssh root@${self.triggers.master_ip} -p 2222 -i ~/.ssh/ansible_rsa \
+      -o ProxyCommand=\"ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa -o StrictHostKeyChecking=no\" \
+      'apt update && apt install postgresql-client -y && \
+      psql "postgres://root:${random_password.prod_master_pg.result}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres -c \"drop database kube_prod;\" ; \
+      psql "postgres://root:${random_password.prod_master_pg.result}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres -c \"create database kube_prod;\" || \
+      echo exists'" >> run.sh
+      echo "MASTER_IP=${self.triggers.master_ip}" > temp.env
+      echo "MASTER_LB_IP=${huaweicloud_lb_loadbalancer.prod_master.vip_address}" >> temp.env
+      echo "JUMP_IP=${huaweicloud_vpc_eip.prod_jumpserver.address}" >> temp.env
+      echo "PG_PASSWORD=${random_password.prod_master_pg.result}" >> temp.env
     EOT
     working_dir = "${path.module}/ansible"
   }
