@@ -65,6 +65,7 @@ terraform apply -auto-approve
 cd ansible
 /bin/bash run.sh
 source temp.env
+source token.env
 
 # backup
 sed -i "s/<REPLACE>/$MASTER_LB_IP/" config.yaml
@@ -75,7 +76,8 @@ echo "PG_PASSWORD=$PG_PASSWORD" >> $ROOT_DIR/README.pass
 cd ../../init-http-gateway
 
 # master 节点的公网域名
-export TF_VAR_prod_k8s_token=`yq -e '.users[] | select(.name == "admin") | .user.token' $$ROOT_DIR/config.yaml`
+# export TF_VAR_prod_k8s_token=`yq -e '.users[] | select(.name == "admin") | .user.token' $$ROOT_DIR/config.yaml`
+export TF_VAR_prod_k8s_token=$SERVER_TOKEN
 # ecs 镜像的名字
 export TF_VAR_prod_jumpserver_ip=$JUMP_IP
 export TF_VAR_prod_master_lb=$MASTER_LB_IP

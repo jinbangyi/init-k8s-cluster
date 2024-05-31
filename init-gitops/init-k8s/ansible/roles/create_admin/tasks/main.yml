@@ -22,3 +22,12 @@
     src: /tmp/config.yaml
     dest: "{{ playbook_dir }}/config.yaml"
     flat: yes
+
+- name: get server token from remote
+  shell: echo SERVER_TOKEN=`cat /var/lib/rancher/k3s/server/agent-token` > /tmp/token
+
+- name: Fetch server token file
+  fetch:
+    src: /tmp/token
+    dest: "{{ playbook_dir }}/token.env"
+    flat: yes
