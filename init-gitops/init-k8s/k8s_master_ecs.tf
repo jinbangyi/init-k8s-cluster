@@ -46,7 +46,7 @@ resource "huaweicloud_compute_instance" "prod_master" {
 # Use the IP list in local-exec
 resource "null_resource" "run_ansible" {
   triggers = {
-    ecs_ips = concat([huaweicloud_vpc_eip.prod_master_lb.address, var.prod_master_domain], [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4])
+    ecs_ips = join(",", concat([huaweicloud_vpc_eip.prod_master_lb.address, var.prod_master_domain], [for instance in huaweicloud_compute_instance.prod_master : instance.network.0.fixed_ip_v4]))
     hosts = join(",", [for instance in huaweicloud_compute_instance.prod_master : format("prod-master-%s ansible_host=%s",instance.id,instance.network.0.fixed_ip_v4)])
   }
 

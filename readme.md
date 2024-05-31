@@ -30,18 +30,34 @@ tee /etc/apt/sources.list.d/hashicorp.list
 
 apt update && apt-get install terraform -y
 
-# generate sshkey
+# 华为云 secret key
+export HW_SECRET_KEY='TODO'
+# 华为云 apikey
+export HW_ACCESS_KEY='TODO'
+
+# generate sshkey and upload to huaweiyun
 cd init-sshkey
+terraform init
+terraform apply -auto-approve
+# 备份一份
+mkdir -p ~/.ssh && cp huawei-key.pem ~/.ssh/
+
+cd ../init-k8s
+# ansible 执行 key
+cp huawei-key.pem ~/.ssh/ansible_rsa && chmod 400 ~/.ssh/ansible_rsa
+
+# master 节点 pg，需要满足华为云的 pg 账号密码规则
+export TF_VAR_postgreSQL_password='TODO'
+# master 节点的公网域名
+export TF_VAR_prod_master_domain='TODO'
+
 terraform init
 terraform apply -auto-approve
 
 
-huawei-key.pem
+# 需要在合适的地方添加引号
+/bin/bash ansible/run.sh
 
-# 华为云 secret key
-export HW_SECRET_KEY=''
-# 华为云 apikey
-export HW_ACCESS_KEY=''
 
 cd init-gitops/init-k8s
 

@@ -5,5 +5,5 @@ variable "prod_master_domain" {
 
 variable "prod_ecs_keypair" {
   type = string
-  default = "aws-manager"
+  default = "huawei-manager"
 }
