@@ -8,6 +8,8 @@
 
 ## steps
 
+1. 初始化 k8s 集群
+
 ```bash
 mkdir -p ~/temp/prod
 cd ~/temp/prod
@@ -89,6 +91,7 @@ cd ansible
 /bin/bash run.sh
 
 # init devops
+# TODO create ecs from vars or files
 cd ../../init-devops
 
 terraform init
@@ -96,4 +99,10 @@ terraform apply -auto-approve
 
 cd ansible
 /bin/bash run.sh
+```
+
+2. 初始化 gitops 依赖
+
+```bash
+
 ```

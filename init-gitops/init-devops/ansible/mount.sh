@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # init disk
+umount /mnt/data || echo "not exists"
 
 echo '
 label: gpt
