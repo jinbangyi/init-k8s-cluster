@@ -1,7 +1,7 @@
 resource "random_password" "prod_master_pg" {
   length           = 12
   special          = true
-  override_special = "!@#%^*-_=+"
+  override_special = "-_=+"
 }
 
 resource "huaweicloud_rds_instance" "k8s_pg" {

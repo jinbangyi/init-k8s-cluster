@@ -58,11 +58,15 @@ cd ../init-k8s
 terraform init
 terraform apply -auto-approve
 
-/bin/bash ansible/run.sh
-source ansible/temp.env
+# 如果出现登陆失败，尝试将生成的私钥导入华为云
+# /dew/kps/kpsList/accountKey
 
-sed -i "s/<replace>/$MASTER_LB_IP/" ansible/config.yaml
-cp ansible/config.yaml $ROOT_DIR/
+cd ansible
+/bin/bash run.sh
+source temp.env
+
+sed -i "s/<replace>/$MASTER_LB_IP/" config.yaml
+cp config.yaml $ROOT_DIR/
 
 echo "PG_PASSWORD=$PG_PASSWORD" >> $ROOT_DIR/README.pass
 
