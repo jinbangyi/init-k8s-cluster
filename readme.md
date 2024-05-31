@@ -33,7 +33,8 @@ apt update && apt-get install terraform -y
 # generate sshkey
 cd init-sshkey
 terraform init
-terraform apply
+terraform apply -auto-approve
+
 
 huawei-key.pem
 
