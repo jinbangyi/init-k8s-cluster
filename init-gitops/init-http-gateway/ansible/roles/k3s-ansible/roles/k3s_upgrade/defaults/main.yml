@@ -1,2 +1,0 @@
----
-systemd_dir: /etc/systemd/system  # noqa var-naming[no-role-prefix]
