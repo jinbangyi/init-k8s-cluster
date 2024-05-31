@@ -11,7 +11,7 @@ data "huaweicloud_compute_flavors" "prod_devops" {
 
 data "huaweicloud_images_image" "default" {
   # 2C4G40G_1
-  name        = "Debian11-40G5"
+  name        = var.prod_ecs_image_name
   visibility  = "private"
   most_recent = true
 }

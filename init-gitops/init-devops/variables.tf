@@ -8,7 +8,7 @@ variable "prod_jumpserver_ip" {
 
 variable "prod_ecs_keypair" {
   type = string
-  default = "aws-manager"
+  default = "huawei-manager"
 }
 
 variable "prod_master_lb" {
