@@ -20,7 +20,7 @@ data "huaweicloud_images_image" "default" {
 resource "huaweicloud_compute_instance" "jumpserver" {
   name               = "prod-jumpserver-000"
   hostname           = "prod-jumpserver-000"
-  key_pair           = "benny"
+  key_pair           = var.prod_ecs_keypair
   system_disk_size   = 40
   image_id           = data.huaweicloud_images_image.default.id
   flavor_id          = data.huaweicloud_compute_flavors.prod_http_gateway.ids[0]

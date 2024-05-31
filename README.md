@@ -9,12 +9,13 @@
 ## steps
 
 ```bash
-ROOT_DIR="~/temp/prod"
-mkdir -p $ROOT_DIR && cd $ROOT_DIR
+mkdir -p ~/temp/prod
+cd ~/temp/prod
+ROOT_DIR=`pwd`
 
 # clone code
 git clone https://github.com/jinbangyi/init-k8s-cluster.git && git checkout dev
-cd init-k8s-cluster
+cd init-k8s-cluster && cd init-gitops
 
 # download terraform
 apt-get update && apt-get install -y gnupg software-properties-common
