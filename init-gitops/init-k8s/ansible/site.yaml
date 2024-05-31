@@ -4,7 +4,6 @@
   become: True
   vars:
     k3s_release_version: 'v1.25.11+k3s1'
-    k3s_control_node: true
     k3s_server:
       node-label: "{{ node_labels }}"
       tls-san: "{{ tls_ips }}"
@@ -14,6 +13,10 @@
         - traefik
         - local-storage
     k3s_registration_address: "{{ loadbalancer_ip }}"
+  pre_tasks:
+    - name: Set each node to be a control node
+      ansible.builtin.set_fact:
+        k3s_control_node: true
   roles:
     - role: 'ansible-role-k3s'
 

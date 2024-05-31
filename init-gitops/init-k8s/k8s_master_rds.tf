@@ -43,8 +43,8 @@ resource "null_resource" "create_db_name" {
       echo "ssh root@${self.triggers.master_ip} -p 2222 -i ~/.ssh/ansible_rsa \
       -o ProxyCommand=\"ssh -p 2222 -W %h:%p -q root@${huaweicloud_vpc_eip.prod_jumpserver.address} -i ~/.ssh/ansible_rsa -o StrictHostKeyChecking=no\" \
       'apt update && apt install postgresql-client -y && \
-      psql "postgres://root:${random_password.prod_master_pg.result}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres -c \"drop database kube_prod;\" ; \
-      psql "postgres://root:${random_password.prod_master_pg.result}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres -c \"create database kube_prod;\" || \
+      psql postgres://root:${random_password.prod_master_pg.result}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres -c \"drop database kube_prod;\" ; \
+      psql postgres://root:${random_password.prod_master_pg.result}@${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]}:5432/postgres -c \"create database kube_prod;\" || \
       echo exists'" >> run.sh
       echo "MASTER_IP=${self.triggers.master_ip}" > temp.env
       echo "MASTER_LB_IP=${huaweicloud_lb_loadbalancer.prod_master.vip_address}" >> temp.env
