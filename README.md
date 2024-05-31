@@ -83,5 +83,15 @@ export TF_VAR_prod_master_lb=$MASTER_LB_IP
 terraform init
 terraform apply -auto-approve
 
+cd ansible
+/bin/bash run.sh
 
+# init devops
+cd ../../init-devops
+
+terraform init
+terraform apply -auto-approve
+
+cd ansible
+/bin/bash run.sh
 ```

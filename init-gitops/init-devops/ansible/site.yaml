@@ -10,3 +10,9 @@
     extra_agent_args: "{{ extra_agent_args }}"
   roles:
     - role: 'k3s_agent'
+
+- name: init data disk
+  hosts: all
+  become: True
+  roles:
+    - role: 'init_disk'
