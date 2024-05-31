@@ -29,6 +29,9 @@ resource "huaweicloud_lb_pool" "prod_http_gateway" {
 # 添加 ecs 至 lb
 resource "huaweicloud_lb_member" "member_1" {
   address       = huaweicloud_compute_instance.prod_http_gateway[count.index].access_ip_v4
+  # 9180 admin
+  # 9080 http
+  # 
   protocol_port = 443
   weight        = 1
   pool_id       = huaweicloud_lb_pool.prod_http_gateway.id

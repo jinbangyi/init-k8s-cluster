@@ -11,7 +11,7 @@ data "huaweicloud_compute_flavors" "prod_devops" {
 
 data "huaweicloud_images_image" "default" {
   # 2C4G40G_1
-  name        = "Debian11-40G3"
+  name        = "Debian11-40G5"
   visibility  = "private"
   most_recent = true
 }
@@ -83,10 +83,10 @@ resource "null_resource" "run_ansible" {
   provisioner "local-exec" {
     command = <<EOT
       echo "# add agent to  cluster" > run.sh
-      echo "echo '${self.triggers.hosts}' | awk 'gsub(/,/,\"\\n\")' > hosts.ini" >> run.sh
+      echo "echo '${self.triggers.hosts},' | awk 'gsub(/,/,\"\\\n\")' > hosts.ini" >> run.sh
       echo "ansible-playbook site.yaml --extra-vars \"loadbalancer_ip=${var.prod_master_lb} \
       k3s_token=${var.prod_k8s_token} \
-      extra_agent_args=' --node-label byterum.category=devops --node-label byterum.group=http-gateway --node-label byterum.network=private --flannel-iface=eth0'\" \
+      extra_agent_args=' --node-label byterum.category=devops --node-label byterum.group=infra --node-label byterum.network=private --flannel-iface=eth0'\" \
       --ssh-extra-args '-o ProxyCommand=\"ssh -p 2222 -W %h:%p -q root@${var.prod_jumpserver_ip} -i ~/.ssh/ansible_rsa -o StrictHostKeyChecking=no\"' \
       " >> run.sh
     EOT

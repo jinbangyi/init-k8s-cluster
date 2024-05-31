@@ -29,8 +29,8 @@ terraform apply
 # ssh root@{IP} -p 2222 -i ~/.ssh/ansible_rsa -o ProxyCommand="ssh -p 2222 -W %h:%p -q root@{JUMP} -i ~/.ssh/ansible_rsa"
 ```
 
-init argocd, deploy drone、gitlab、dockerhub、npm、pypi、loki、prometheus
-
 ## deploy
 
+- install argocd
+- init gitops, using github private repo
 - install apisix ingress

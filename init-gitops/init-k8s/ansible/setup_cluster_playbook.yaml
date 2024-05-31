@@ -12,7 +12,6 @@
       datastore-endpoint: 'postgres://{{ database_user }}:{{ database_password }}@{{ database_host }}:{{ database_port }}/{{ database_name }}'
       disable:
         - traefik
-        - coredns
         - local-storage
     k3s_registration_address: "{{ loadbalancer_ip }}"
   pre_tasks:

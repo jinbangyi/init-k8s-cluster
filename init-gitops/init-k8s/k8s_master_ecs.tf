@@ -54,7 +54,7 @@ resource "null_resource" "run_ansible" {
     command = <<EOT
       X='"'"'
       echo '# init k8s cluster \
-      echo "${self.triggers.hosts}" | awk $Xgsub(/,/,"\n")$X > hosts.ini
+      echo "${self.triggers.hosts}," | awk $Xgsub(/,/,"\n")$X > hosts.ini
       echo ansible-playbook setup_cluster_playbook.yaml --extra-vars "loadbalancer_ip=${huaweicloud_lb_loadbalancer.prod_master.vip_address} \
       database_host=${huaweicloud_rds_instance.k8s_pg.private_dns_names[0]} \
       database_user=root \
