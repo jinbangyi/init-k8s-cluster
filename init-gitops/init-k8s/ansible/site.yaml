@@ -6,7 +6,7 @@
     k3s_release_version: 'v1.25.11+k3s1'
     k3s_server:
       node-label: "{{ node_labels }}"
-      tls-san: "{{ tls_ips }}"
+      tls-san: "{{ tls_ips.split(',') }}"
       flannel-iface: 'eth0'
       datastore-endpoint: 'postgres://{{ database_user }}:{{ database_password }}@{{ database_host }}:{{ database_port }}/{{ database_name }}'
       disable:

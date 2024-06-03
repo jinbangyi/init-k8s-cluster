@@ -1,3 +1,0 @@
-export HW_ACCESS_KEY="TODO"
-export HW_SECRET_KEY="TODO"
-

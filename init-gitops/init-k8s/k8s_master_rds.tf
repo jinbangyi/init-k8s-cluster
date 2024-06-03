@@ -48,6 +48,7 @@ resource "null_resource" "create_db_name" {
       echo exists'" >> run.sh
       echo "MASTER_IP=${self.triggers.master_ip}" > temp.env
       echo "MASTER_LB_IP=${huaweicloud_lb_loadbalancer.prod_master.vip_address}" >> temp.env
+      echo "MASTER_LB_PUBLIC_IP=${huaweicloud_vpc_eip.prod_master_lb.address}" >> temp.env
       echo "JUMP_IP=${huaweicloud_vpc_eip.prod_jumpserver.address}" >> temp.env
       echo "PG_PASSWORD=${random_password.prod_master_pg.result}" >> temp.env
     EOT

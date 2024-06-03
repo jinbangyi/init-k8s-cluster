@@ -1,3 +1,5 @@
+sleep 1
+
 TOKEN=`kubectl -n kube-system get secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}') -o jsonpath='{.data.token}' | base64 -d -w0`
 
 echo 'apiVersion: v1

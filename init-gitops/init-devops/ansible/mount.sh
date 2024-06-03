@@ -31,3 +31,5 @@ mkdir -p /mnt/data && mount /dev/vdb1 /mnt/data
 df -h | grep /mnt/data
 
 partprobe && xfs_growfs /dev/vdb1
+
+exit 0

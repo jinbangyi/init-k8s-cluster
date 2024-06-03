@@ -26,6 +26,12 @@
 - name: get server token from remote
   shell: echo SERVER_TOKEN=`cat /var/lib/rancher/k3s/server/agent-token` > /tmp/token
 
+- name: get k8s admin token from remote
+  shell: echo K8S_ADMIN_TOKEN=`kubectl -n kube-system get secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}') -o jsonpath='{.data.token}' | base64 -d -w0` >> /tmp/token
+
+- name: get k8s ca from remote
+  shell: echo K8S_CA=`grep 'certificate-authority-data' /etc/rancher/k3s/k3s.yaml | awk '{ print $2 }'` >> /tmp/token
+
 - name: Fetch server token file
   fetch:
     src: /tmp/token

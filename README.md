@@ -6,6 +6,8 @@
 - 华为云账号准备好机器镜像
 - 准备一台 debian 机器，用于运行脚本
 
+- 添加 ssh private key 至 github
+
 ## steps
 
 1. 初始化 k8s 集群
@@ -66,8 +68,7 @@ terraform apply -auto-approve
 # init k8s
 cd ansible
 /bin/bash run.sh
-source temp.env
-source token.env
+source temp.env && source token.env
 
 # backup
 sed -i "s/<REPLACE>/$MASTER_LB_IP/" config.yaml
@@ -101,8 +102,99 @@ cd ansible
 /bin/bash run.sh
 ```
 
-2. 初始化 gitops 依赖
+2. 初始化 gitops 基础依赖
+
+apisix、argocd、local-storage
+
+```bash
+# login into master node from ecs
+export JUMP_IP='TODO'
+export MASTER_IP='TODO'
+
+ssh root@$MASTER_IP -p 2222 -i ~/.ssh/ansible_rsa -o ProxyCommand="ssh -p 2222 -W %h:%p -q root@$JUMP_IP -i ~/.ssh/ansible_rsa -o StrictHostKeyChecking=no"
+
+cd ~
+
+ssh-keygen -t rsa -q -f "$HOME/.ssh/id_rsa" -N ""
+# TODO add sshkey to gitops github
+cat "$HOME/.ssh/id_rsa.pub"
+
+PRIVATE_KEY=`cat "$HOME/.ssh/id_rsa" | base64 -w0`
+
+git clone git@github.com:jinbangyi/gitops.git
+cd gitops && git checkout master
+
+cd apps/devops/argocd
+
+# init github sshkey
+echo '
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ssh-key-secret
+data:
+  sshPrivateKey: '$PRIVATE_KEY > install/base/ssh-private-secret.yaml
+
+export K8S_ADMIN_TOKEN='TODO'
+export MASTER_LB_PUBLIC_IP='TODO'
+export K8S_CA='TODO'
+
+# init kubeconfig
+echo '
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cluster-prod
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+type: Opaque
+stringData:
+  config: |
+    {
+      "bearerToken": "'$K8S_ADMIN_TOKEN'",
+      "tlsClientConfig": {
+        "caData": "'$K8S_CA'" 
+      }
+    }
+  name: prod
+  server: https://'$MASTER_LB_PUBLIC_IP > install/base/cluster-prod-secret.yaml
+
+# push sshkey and kubeconfig to gitops
+git config --global user.email "master@nftgo.io"
+git add . && git commit -m "init kube config and sshkey" && git push
+
+# init argocd
+kubectl create namespace argocd
+kubectl kustomize install | kubectl apply -f -
+
+kubectl kustomize appprojects | kubectl apply -f -
+
+kubectl kustomize apps | kubectl apply -f -
+
+# TODO download argocd cli and sync the deployment
+
+ARGO_PASSWORD=`kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 -d -w0`
+ARGO_SERVER_IP=kubectl get service argocd-server -n argocd | grep -v CLUSTER-IP | awk '{ print $3 }'
+echo $ARGO_PASSWORD
+
+# TODO local ssh-port-forward
+export JUMP_IP='TODO'
+export MASTER_IP='TODO'
+export ARGO_SERVER_IP='TODO'
+
+ssh -o StrictHostKeyChecking=no -o ProxyCommand="ssh -p 2222 -W %h:%p -q root@$JUMP_IP -i ~/.ssh/ansible_rsa -o StrictHostKeyChecking=no" -L 8080:$ARGO_SERVER_IP:80 root@$MASTER_IP -p 2222 -i ~/.ssh/ansible_rsa -N -v
+
+# TODO local, http://localhost:8080, admin:$ARGO_PASSWORD, login to argocd web ui to check and sync the deployment
+```
+
+3. 使用 gitops 初始化 k8s 基础服务
+
+drone、harbor、npm、pypi、prometheus、loki、grafana、influxdb、telegraf
 
 ```bash
 
 ```
+
+## TODO
+
+- 使用 ansible 执行磁盘初始化脚本，ansible 会卡住
