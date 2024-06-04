@@ -1,4 +1,10 @@
 ---
+- name: upload config file
+  hosts: all
+  become: True
+  roles:
+    - role: 'copy_config'
+
 - name: add agent to k3s
   hosts: all
   become: True
@@ -16,9 +22,3 @@
   become: True
   roles:
     - role: 'init_disk'
-
-- name: upload config file
-  hosts: all
-  become: True
-  roles:
-    - role: 'copy_config'
