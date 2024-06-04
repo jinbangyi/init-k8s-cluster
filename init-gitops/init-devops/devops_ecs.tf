@@ -22,7 +22,7 @@ resource "huaweicloud_evs_volume" "prod_devops" {
   volume_type       = "GPSSD"
   size              = 300
 
-  count = 1
+  count = 3
 }
 
 resource "huaweicloud_compute_instance" "prod_devops" {
@@ -41,14 +41,14 @@ resource "huaweicloud_compute_instance" "prod_devops" {
   tags = {
     "env": "prod",
     "category": "devops",
-    "group": "management",
+    "group": "infra",
   }
 
   network {
     uuid = data.huaweicloud_vpc_subnet.prod_private.id
   }
 
-  count = 1
+  count = 3
 }
 
 resource "huaweicloud_compute_volume_attach" "attached" {
@@ -70,7 +70,7 @@ resource "huaweicloud_compute_volume_attach" "attached" {
     }
   }
 
-  count = 1
+  count = 3
 
   depends_on = [ huaweicloud_compute_instance.prod_devops, huaweicloud_evs_volume.prod_devops ]
 }

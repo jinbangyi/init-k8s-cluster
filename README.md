@@ -104,7 +104,7 @@ cd ansible
 
 2. 初始化 gitops 基础依赖
 
-apisix、argocd、local-storage
+apisix、argocd、local-storage、kube-dashboard
 
 ```bash
 # login into master node from ecs
@@ -161,7 +161,7 @@ stringData:
 
 # push sshkey and kubeconfig to gitops
 git config --global user.email "master@nftgo.io"
-git add . && git commit -m "init kube config and sshkey" && git push
+git add . --force && git commit -m "init kube config and sshkey" && git push
 
 # init argocd
 kubectl create namespace argocd
@@ -189,7 +189,11 @@ ssh -o StrictHostKeyChecking=no -o ProxyCommand="ssh -p 2222 -W %h:%p -q root@$J
 
 3. 使用 gitops 初始化 k8s 基础服务
 
-drone、harbor、npm、pypi、prometheus、loki、grafana、influxdb、telegraf
+- [x] kafka-ui
+- [ ] airflow, TODO migrate
+- [ ] redisinsight, TODO add nfs-client
+- [ ] kube-dashboard fix `Http failure during parsing for https://kube-dashboard.kbenny.com/api/v1/csrftoken/login`
+- [ ] drone、harbor、npm、pypi、prometheus、loki、grafana、influxdb、telegraf
 
 ```bash
 
