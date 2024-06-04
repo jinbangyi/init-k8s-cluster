@@ -10,7 +10,7 @@ sector-size: 512
 
 /dev/vdb1 : start=2048' > mount.txt
 
-parted /dev/vdb mklabel gpt
+parted /dev/vdb mklabel gpt -s
 
 sfdisk /dev/vdb < mount.txt
 
