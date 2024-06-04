@@ -1,0 +1,5 @@
+---
+- name: Upload the registry to the remote host
+  copy:
+    src: "{{ playbook_dir }}/registries.yaml"
+    dest: /etc/rancher/k3s/registries.yaml
