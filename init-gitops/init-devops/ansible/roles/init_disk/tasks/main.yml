@@ -1,11 +1,5 @@
 ---
-- name: Upload the script to the remote host
-  copy:
-    src: "{{ playbook_dir }}/mount.sh"
-    dest: /tmp/mount.sh
-    mode: '0755'
-
 - name: Execute the script on the remote host
-  ansible.builtin.script: /tmp/mount.sh
+  ansible.builtin.script: "{{ playbook_dir }}/mount.sh"
   args:
     executable: /bin/bash
