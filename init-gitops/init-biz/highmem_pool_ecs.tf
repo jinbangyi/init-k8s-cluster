@@ -1,19 +1,9 @@
-# 可用区没有特别的要求
-data "huaweicloud_availability_zones" "default" {}
-
 # gateway
 data "huaweicloud_compute_flavors" "prod_pool" {
   availability_zone = data.huaweicloud_availability_zones.default.names[0]
   performance_type  = "highmem"
   cpu_core_count    = 8
   memory_size       = 64
-}
-
-data "huaweicloud_images_image" "default" {
-  # 2C4G40G_1
-  name        = var.prod_ecs_image_name
-  visibility  = "private"
-  most_recent = true
 }
 
 resource "huaweicloud_compute_instance" "prod_pool" {
