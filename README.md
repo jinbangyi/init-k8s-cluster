@@ -99,6 +99,15 @@ terraform init
 terraform apply -auto-approve
 
 cd ansible
+# TODO add private registry auth
+echo '
+configs:
+  "TODO":
+    insecure_skip_verify: false
+    auth:
+      username: "TODO"
+      password: "TODO"' > registries.yaml
+
 /bin/bash run.sh
 ```
 
@@ -190,10 +199,13 @@ ssh -o StrictHostKeyChecking=no -o ProxyCommand="ssh -p 2222 -W %h:%p -q root@$J
 3. 使用 gitops 初始化 k8s 基础服务
 
 - [x] kafka-ui
-- [ ] airflow, TODO migrate
+- [x] airflow, ~~migrate~~
 - [ ] redisinsight, TODO add nfs-client
-- [ ] kube-dashboard fix `Http failure during parsing for https://kube-dashboard.kbenny.com/api/v1/csrftoken/login`
-- [ ] drone、harbor、npm、pypi、prometheus、loki、grafana、influxdb、telegraf
+- [x] kube-dashboard ~~fix `Http failure during parsing for https://kube-dashboard.kbenny.com/api/v1/csrftoken/login`~~
+- [ ] prometheus, grafana
+- [ ] drone、harbor、npm、pypi、loki、influxdb、telegraf
+- [ ] byterum-biz
+- [ ] helm secret
 
 ```bash
 

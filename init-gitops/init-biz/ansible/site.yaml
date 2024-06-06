@@ -1,0 +1,24 @@
+---
+- name: upload config file
+  hosts: all
+  become: True
+  roles:
+    - role: 'copy_config'
+
+- name: add agent to k3s
+  hosts: all
+  become: True
+  vars:
+    api_endpoint: "{{ loadbalancer_ip }}"
+    api_port: 443
+    k3s_version: 'v1.25.11+k3s1'
+    token: "{{ k3s_token }}"
+    extra_agent_args: "{{ extra_agent_args }}"
+  roles:
+    - role: 'k3s_agent'
+
+- name: init data disk
+  hosts: all
+  become: True
+  roles:
+    - role: 'init_disk'

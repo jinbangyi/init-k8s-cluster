@@ -1,0 +1,5 @@
+---
+- name: Execute the script on the remote host
+  ansible.builtin.script: "{{ playbook_dir }}/mount.sh"
+  args:
+    executable: /bin/bash

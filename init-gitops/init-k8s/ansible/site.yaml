@@ -1,4 +1,10 @@
 ---
+- name: upload config file
+  hosts: all
+  become: True
+  roles:
+    - role: 'copy_config'
+
 - name: Set up k3s cluster
   hosts: all
   become: True

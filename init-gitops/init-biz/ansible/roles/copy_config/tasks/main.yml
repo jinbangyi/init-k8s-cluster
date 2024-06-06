@@ -1,0 +1,10 @@
+---
+- name: Mkdir dir if not exists
+  ansible.builtin.shell:
+    executable: /bin/bash
+    cmd: mkdir -p /etc/rancher/k3s/
+
+- name: Upload the registry to the remote host
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/registries.yaml"
+    dest: /etc/rancher/k3s/registries.yaml
