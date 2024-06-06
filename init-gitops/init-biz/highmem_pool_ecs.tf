@@ -43,7 +43,7 @@ resource "huaweicloud_compute_instance" "prod_pool" {
 }
 
 # add nodes to cluster
-resource "null_resource" "run_ansible" {
+resource "null_resource" "run_ansible2" {
   triggers = {
     hosts = join(",", [for instance in huaweicloud_compute_instance.prod_pool : instance.network.0.fixed_ip_v4])
     labels = "--node-label byterum.category=biz --node-label byterum.group=highmem --node-label byterum.network=private"
