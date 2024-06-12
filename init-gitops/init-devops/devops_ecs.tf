@@ -20,7 +20,7 @@ resource "huaweicloud_evs_volume" "prod_devops" {
   name              = "prod-devops-00${count.index}"
   availability_zone = data.huaweicloud_availability_zones.default.names[0]
   volume_type       = "GPSSD"
-  size              = 300
+  size              = 800
 
   count = 3
 }
