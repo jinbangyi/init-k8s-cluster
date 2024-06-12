@@ -1,0 +1,5 @@
+---
+- name: extend disks
+  ansible.builtin.script: "{{ playbook_dir }}/extend.sh"
+  args:
+    executable: /bin/bash
