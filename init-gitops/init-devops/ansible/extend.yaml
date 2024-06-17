@@ -1,0 +1,6 @@
+---
+- name: init data disk
+  hosts: all
+  become: True
+  roles:
+    - role: 'extend_disk'
