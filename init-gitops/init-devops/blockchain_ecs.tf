@@ -2,7 +2,7 @@ resource "huaweicloud_evs_volume" "blockchain_eth" {
   name              = "blockchain-eth-001"
   availability_zone = data.huaweicloud_availability_zones.default.names[0]
   volume_type       = "GPSSD"
-  size              = 1500
+  size              = 2000
 }
 
 resource "huaweicloud_compute_instance" "blockchain_eth" {
