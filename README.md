@@ -202,7 +202,7 @@ ssh -o StrictHostKeyChecking=no -o ProxyCommand="ssh -p 2222 -W %h:%p -q root@$J
 - [x] airflow, ~~migrate~~
 - [ ] redisinsight, TODO add nfs-client
 - [x] kube-dashboard ~~fix `Http failure during parsing for https://kube-dashboard.kbenny.com/api/v1/csrftoken/login`~~
-- [ ] prometheus, grafana、loki、influxdb、telegraf
+- [x] prometheus, grafana、loki、influxdb、telegraf
 - [ ] drone、harbor、npm、pypi
 - [ ] byterum-biz
 - [ ] helm secret

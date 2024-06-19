@@ -1,4 +1,12 @@
 # master
+
+data "huaweicloud_compute_flavors" "prod_master" {
+  availability_zone = data.huaweicloud_availability_zones.default.names[0]
+  performance_type  = "normal"
+  cpu_core_count    = 2
+  memory_size       = 4
+}
+
 resource "huaweicloud_compute_instance" "prod_master" {
   # TODO names from var
   name               = "prod-master-00${count.index}"
@@ -6,7 +14,7 @@ resource "huaweicloud_compute_instance" "prod_master" {
   key_pair           = var.prod_ecs_keypair
   system_disk_size   = 40
   image_id           = data.huaweicloud_images_image.default.id
-  flavor_id          = data.huaweicloud_compute_flavors.prod_http_gateway.ids[0]
+  flavor_id          = data.huaweicloud_compute_flavors.prod_master.ids[0]
   availability_zone  = data.huaweicloud_availability_zones.default.names[0]
   security_group_ids = [
     huaweicloud_networking_secgroup.prod_default.id,
