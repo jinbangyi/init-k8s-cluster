@@ -5,7 +5,7 @@ data "huaweicloud_availability_zones" "default" {}
 data "huaweicloud_compute_flavors" "prod_http_gateway" {
   availability_zone = data.huaweicloud_availability_zones.default.names[0]
   performance_type  = "normal"
-  cpu_core_count    = 1
+  cpu_core_count    = 2
   memory_size       = 4
 }
 
@@ -53,7 +53,7 @@ resource "huaweicloud_compute_instance" "prod_http_gateway" {
     }
   }
 
-  count = 2
+  count = 3
 }
 
 # add nodes to cluster
