@@ -4,7 +4,7 @@ data "huaweicloud_compute_flavors" "prod_master" {
   availability_zone = data.huaweicloud_availability_zones.default.names[0]
   performance_type  = "normal"
   cpu_core_count    = 2
-  memory_size       = 4
+  memory_size       = 8
 }
 
 resource "huaweicloud_compute_instance" "prod_master" {

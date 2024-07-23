@@ -1,5 +1,6 @@
 variable "prod_master_domain" {
   type = string
+  default = "master-api.prod.nftgo.dev"
 }
 
 variable "prod_ecs_keypair" {

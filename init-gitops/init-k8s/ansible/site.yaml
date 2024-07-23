@@ -18,6 +18,14 @@
       disable:
         - traefik
         - local-storage
+    kube-controller-manager-arg:
+    - "address=0.0.0.0"
+    - "bind-address=0.0.0.0"
+    kube-proxy-arg:
+    - "metrics-bind-address=0.0.0.0"
+    kube-scheduler-arg:
+    - "address=0.0.0.0"
+    - "bind-address=0.0.0.0"
     k3s_registration_address: "{{ loadbalancer_ip }}"
   pre_tasks:
     - name: Set each node to be a control node
